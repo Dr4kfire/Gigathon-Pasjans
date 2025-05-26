@@ -1,21 +1,25 @@
 #pragma once
 
-
+#include "scenes/game_scene.h"
 #include "scenes/main_menu.h"
-
+#include "scenes/scene.h"
 
 class Game
 {
 public:
-    Game() = default;
-    ~Game() = default;
+	Game();
+	~Game() = default;
 
-    void Draw();
-    void Process();
+	void Draw();
+	void Process(const int &input);
 
-    void ChangeScene();
+	void ChangeScene(Scene &new_scene);
 
 private:
-    MainMenu main_menu;
-};
+	bool m_hard_mode = false;
 
+	Scene *current_scene;
+
+	MainMenu main_menu;
+	GameScene game_scene;
+};

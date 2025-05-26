@@ -1,21 +1,20 @@
-#pragma once 
+#pragma once
 
 #include "game/game.h"
 
-
-class Application 
+class Application
 {
 public:
-    Application();
-    ~Application();
+	Application();
+	~Application();
 
-    void Process();
-    void Draw();
+	void Process();
+	void Draw();
 
-    void Close();
-    bool IsRunning();
+	void Close();
+	bool IsRunning();
 
 private:
-    bool m_is_running = true;
-    Game game;
+	bool m_is_running = true;
+	Game game;
 };
