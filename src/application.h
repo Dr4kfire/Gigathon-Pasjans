@@ -1,3 +1,5 @@
+#pragma once 
+
 #ifdef _WIN32
     #define PDC_FORCE_UTF8
     #define PDC_WIDE
@@ -7,13 +9,9 @@
     #include <ncurses.h>
 #endif
 
-int main(int argc, char const *argv[])
-{
-    initscr();
-    noecho(); cbreak(); curs_set(0);
 
-    refresh();
-    getch();
-
-    endwin();
-}
+class Application {
+public:
+    Application();
+    ~Application();
+};

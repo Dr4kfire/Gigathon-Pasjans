@@ -1,12 +1,18 @@
 cmake_minimum_required(VERSION 3.10)
-project(Pasjans CXX)
-set(CMAKE_C_STANDARD 99)
+project(ncurses_windows_project)
 
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-file(GLOB_RECURSE PROJECT_SOURCES CONFIGURE_DEPENDS "${CMAKE_CURRENT_LIST_DIR}/src/*.cpp")
-set(PROJECT_INCLUDE "${CMAKE_CURRENT_LIST_DIR}/src/")
+include_directories(${CMAKE_SOURCE_DIR}/include/pdcursesmod)
+file(GLOB SOURCES ${CMAKE_SOURCE_DIR}/src/*.cpp)
+add_executable(${PROJECT_NAME} ${SOURCES})
 
-
-add_executable(${PROJECT_NAME})
-target_sources(${PROJECT_NAME} PRIVATE ${PROJECT_SOURCES})
-target_include_directories(${PROJECT_NAME} PRIVATE ${PROJECT_INCLUDE})
+if(WIN32)
+    target_link_libraries(${PROJECT_NAME} 
+        ${CMAKE_SOURCE_DIR}/lib/pdcurses.lib
+        winmm
+    )
+else()
+    target_link_libraries(${PROJECT_NAME} ncurses)
+endif()
