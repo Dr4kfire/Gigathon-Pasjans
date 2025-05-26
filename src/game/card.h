@@ -31,7 +31,7 @@ public:
 	void AppendCard(struct Card card);
 	Card PopFrontCard();
 
-	int GetSize();
+	size_t GetSize();
 
 	const struct Card &GetConstCardReference(int index);
 

@@ -7,13 +7,16 @@
     #include <ncurses.h>
 #endif
 
+#include "application.h"
+
 int main(int argc, char const *argv[])
 {
-    initscr();
-    noecho(); cbreak(); curs_set(0);
+    Application app;
 
-    refresh();
-    getch();
+    while (app.IsRunning())
+    {
+        app.Draw();
 
-    endwin();
+        app.Process();
+    }
 }
