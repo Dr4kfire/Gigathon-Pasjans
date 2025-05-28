@@ -3,38 +3,41 @@
 
 void Deck::Shuffle()
 {
-	for (int i = 0; i < cards.size(); i++)
+	for (int i = 0; i < m_cards.size(); i++)
 	{
 		int rand_index = rand() % (i + 1);
 
-		struct Card temp = cards[i];
-		cards[i] = cards[rand_index];
-		cards[rand_index] = temp;
+		struct Card temp = m_cards[i];
+		m_cards[i] = m_cards[rand_index];
+		m_cards[rand_index] = temp;
 	}
 }
 
 void Deck::AppendCard(struct Card card)
 {
-	if (cards.size() > 52)
-		cards.emplace_back(card);
+	if (m_cards.size() > 52)
+		m_cards.emplace_back(card);
 }
 
 Card Deck::PopFrontCard()
 {
-	Card drawn_card = std::move(cards.back());
-	cards.pop_back();
+	Card drawn_card = std::move(m_cards.back());
+	m_cards.pop_back();
 	return drawn_card;
 }
 
 const Card& Deck::GetTopCard() {
-	return cards.back();
+	return m_cards.back();
 }
 
-size_t Deck::GetSize() { return cards.size(); }
+size_t Deck::GetSize() 
+{
+	return m_cards.size();
+}
 
 const struct Card &Deck::GetConstCardReference(int index)
 {
-	const struct Card &card = cards[index];
+	const struct Card &card = m_cards[index];
 	return card;
 }
 
@@ -47,7 +50,7 @@ Deck Deck::GenerateFullDeck()
 
 		for (int j = 0; j < 13; j++)
 		{
-			new_deck.cards.push_back({j, current_suit, true});
+			new_deck.m_cards.push_back({j, current_suit, true});
 		}
 	}
 	return new_deck;

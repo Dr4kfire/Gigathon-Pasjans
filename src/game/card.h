@@ -13,7 +13,7 @@ struct Card
 		SPADES = 3,
 	};
 	suits suit;
-	bool hidden = true;
+	bool hidden = false;
 };
 
 class Deck
@@ -23,7 +23,7 @@ public:
 
 	Deck(bool draw_as_column = false) : draw_as_column(draw_as_column)
 	{
-		cards.reserve(52);
+		m_cards.reserve(52);
 	}
 
 	void Shuffle();
@@ -36,7 +36,11 @@ public:
 
 	const struct Card &GetConstCardReference(int index);
 
-private:
-	std::vector<struct Card> cards;
+public:
 	bool draw_as_column = false;
+	int max_column_size = 13;
+	bool hidden = false;
+
+private:
+	std::vector<struct Card> m_cards;
 };

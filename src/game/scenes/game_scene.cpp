@@ -49,14 +49,23 @@ void GameScene::Draw()
 	}
 
 	// ADDITIONAL DECK, DRAW PILE & SORTED PILES
-	char COMPACT_ROW_TEXT[42] = "\0";
-	position_x = std::round((size_x - strlen(COMPACT_ROW_TEXT)) / 2.0);
+	const size_t COMPACT_ROW_SIZE = 42;
+	char COMPACT_ROW_TEXT[COMPACT_ROW_SIZE] = "\0";
 
-	snprintf(COMPACT_ROW_TEXT, sizeof(COMPACT_ROW_TEXT), COMPACT_TEMPLATE, "? ", "?");
-	strcat(COMPACT_ROW_TEXT, " ");
-	snprintf(COMPACT_ROW_TEXT, sizeof(COMPACT_ROW_TEXT), COMPACT_TEMPLATE, "? ", "?");
+	position_x = std::round((size_x - COMPACT_ROW_SIZE) / 2.0);
 
-	
+	char additional_text[64] = "\0";
+	GetDeckDrawBuffer(m_game_decks.additional, additional_text, sizeof(additional_text));
+	mvprintw(4, position_x, additional_text);
+
+	char draw_pile_text[64] = "\0";
+	GetDeckDrawBuffer(m_game_decks.draw_pile, draw_pile_text, sizeof(draw_pile_text));
+	mvprintw(4, position_x + 1 + strlen(additional_text), draw_pile_text);
+
+
+	// snprintf(COMPACT_ROW_TEXT, sizeof(COMPACT_ROW_TEXT), COMPACT_TEMPLATE, "? ", "?");
+	// strcat(COMPACT_ROW_TEXT, " ");
+	// snprintf(COMPACT_ROW_TEXT, sizeof(COMPACT_ROW_TEXT), COMPACT_TEMPLATE, "? ", "?");
 
 	// if (m_game_decks.additional.GetSize() > 0)
 	// {
@@ -70,7 +79,7 @@ void GameScene::Draw()
 
 void GameScene::Process(const int &input) {}
 
-void GameScene::GetCardDrawBuffer(Card& card, char *buffer, size_t buffer_size)
+void GameScene::GetCardDrawBuffer(const Card& card, char *buffer, size_t buffer_size)
 {
 	char suit_char = SUIT_CHARS[card.suit];
 
@@ -106,13 +115,42 @@ void GameScene::GetCardDrawBuffer(Card& card, char *buffer, size_t buffer_size)
 	}
 }
 
-void GameScene::GetDeckDrawBuffer(Deck &deck, char *buffer, size_t buffer_size)
+void GameScene::GetDeckDrawBuffer(Deck& deck, char *buffer, size_t buffer_size)
 {
-	if (deck.GetSize() == 0) {
-		snprintf(buffer, buffer_size, COMPACT_TEMPLATE, "? ", "?");
+	if (!m_full_ascii) {
+		if (deck.GetSize() == 0) {
+			snprintf(buffer, buffer_size, COMPACT_TEMPLATE, "  ", " ");
+			return;
+		}
+		
+		if (deck.hidden){
+			snprintf(buffer, buffer_size, COMPACT_TEMPLATE, "? ", "?");
+			return;
+		}
+
+		if (!deck.draw_as_column) {
+			const Card& top_card = deck.GetTopCard();
+			GetCardDrawBuffer(top_card, buffer, buffer_size);
+			return;
+		}
+
+		size_t max = deck.max_column_size;
+		if (max < deck.GetSize()) {
+			max = deck.GetSize();
+		}
+		for (size_t i = 0; i < max; i++) {
+			const Card& card = deck.GetConstCardReference(i);
+			GetCardDrawBuffer(card, buffer, buffer_size);
+			strcat(buffer, "\n");
+		}
 		return;
 	}
 
-	const Card& top_card = deck.GetTopCard();
+	// if (deck.GetSize() == 0) {
+	// 	snprintf(buffer, buffer_size, COMPACT_TEMPLATE, "  ", " ");
+	// 	return;
+	// }
+
+	// const Card& top_card = deck.GetTopCard();
 	// GetCardDrawBuffer(top_card, buffer, buffer_size);
 }
