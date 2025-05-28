@@ -26,15 +26,15 @@ public:
 		m_cards.reserve(52);
 	}
 
+	void AppendCard(struct Card card, bool hide_card = true);
+
+	Card PopFrontCard();
+	const Card& GetConstCardReference(int index);
+	Card& GetCardReference(int index);
+
 	void Shuffle();
 
-	void AppendCard(struct Card card);
-	Card PopFrontCard();
-	const Card& GetTopCard();
-
 	size_t GetSize();
-
-	const struct Card &GetConstCardReference(int index);
 
 public:
 	bool draw_as_column = false;

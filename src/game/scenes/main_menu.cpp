@@ -20,10 +20,14 @@ void MainMenu::Draw()
 
 	// TITLE
 	const char *ASCII[] = {
-		" ____   __   ____    __   __   __ _  ____",
-	    "(  _ \\ / _\\ / ___) _(  ) / _\\ (  ( \\/ ___)",
-	    " ) __//    \\\\___ \\/ \\) \\/    \\/    /\\___ \\",
-	    "(__)  \\_/\\_/(____/\\____/\\_/\\_/(_)__)(____/"
+		" ____   __   __    __  ____  __   ____  ____ ",
+		"/ ___) /  \\ (  )  (  )(_  _)/ _\\ (  _ \\(  __)",
+		"\\___ \\(  O )/ (_/\\ )(   )( /    \\ )   / ) _) ",
+		"(____/ \\__/ \\____/(__) (__)\\_/\\_/(__\\_)(____)",
+		// " ____   __   ____    __   __   __ _  ____",
+	    // "(  _ \\ / _\\ / ___) _(  ) / _\\ (  ( \\/ ___)",
+	    // " ) __//    \\\\___ \\/ \\) \\/    \\/    /\\___ \\",
+	    // "(__)  \\_/\\_/(____/\\____/\\_/\\_/(_)__)(____/"
 	};
 	const int ASCII_LENGTH = 4;
 
@@ -87,14 +91,19 @@ void MainMenu::Draw()
 
 	// FULL ASCII WARNING
 	if (m_full_ascii == true) {
+		// const char* WARNING_TEXT[] = {
+		// 	"* When using full ASCII mode please resize",
+		// 	"  and scale your terminal window!"
+		// };
 		const char* WARNING_TEXT[] = {
-			"* When using full ASCII mode please resize",
-			"  and scale your terminal window!"
+			"* Currently not working!",
 		};
 
 		position_x = std::round((size_x - std::strlen(WARNING_TEXT[0])) / 2.0);
+		attron(COLOR_PAIR(1));
 		mvprintw(size_y - 4, position_x, "%s", WARNING_TEXT[0]);
-		mvprintw(size_y - 3, position_x, "%s", WARNING_TEXT[1]);
+		// mvprintw(size_y - 3, position_x, "%s", WARNING_TEXT[1]);
+		attroff(COLOR_PAIR(1));
 	}
 
 	// FOOTER

@@ -1,45 +1,52 @@
 #include "card.h"
 #include <cstdlib>
+#include <algorithm>
+#include <random>
 
-void Deck::Shuffle()
-{
-	for (int i = 0; i < m_cards.size(); i++)
-	{
-		int rand_index = rand() % (i + 1);
 
-		struct Card temp = m_cards[i];
-		m_cards[i] = m_cards[rand_index];
-		m_cards[rand_index] = temp;
-	}
-}
-
-void Deck::AppendCard(struct Card card)
+void Deck::AppendCard(Card card, bool hide_card)
 {
 	if (m_cards.size() > 52)
-		m_cards.emplace_back(card);
+		return;
+
+	card.hidden = hide_card;
+	m_cards.emplace_back(card);
 }
 
 Card Deck::PopFrontCard()
 {
 	Card drawn_card = std::move(m_cards.back());
+	drawn_card.hidden = false;
 	m_cards.pop_back();
 	return drawn_card;
 }
 
-const Card& Deck::GetTopCard() {
-	return m_cards.back();
+const Card& Deck::GetConstCardReference(int index)
+{
+	const Card& card = m_cards[index];
+	return card;
 }
+
+Card& Deck::GetCardReference(int index) {
+	Card& card = m_cards[index];
+	return card;
+}
+
+
+void Deck::Shuffle()
+{
+    std::random_device rd;
+    std::mt19937 rng(rd());
+
+    std::shuffle(m_cards.begin(), m_cards.end(), rng);
+}
+
 
 size_t Deck::GetSize() 
 {
 	return m_cards.size();
 }
 
-const struct Card &Deck::GetConstCardReference(int index)
-{
-	const struct Card &card = m_cards[index];
-	return card;
-}
 
 Deck Deck::GenerateFullDeck()
 {

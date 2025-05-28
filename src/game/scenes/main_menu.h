@@ -15,7 +15,7 @@ private:
         DIFFICULTY,
         SETTINGS,
     };
-    Options m_selected_option;
+    Options m_selected_option = Options::START;
     int option_idx = 0;
     
     bool m_hard_mode = false;

@@ -1,6 +1,7 @@
 #include "game_scene.h"
 #include <cstddef>
 #include <cstdio>
+#include <string>
 #ifdef _WIN32
 #define PDC_FORCE_UTF8
 #define PDC_WIDE
@@ -12,7 +13,10 @@
 #include <cmath>
 #include <cstring>
 
-const char *FULL_TEMPLATE[] = {
+using std::string;
+
+
+const char* FULL_TEMPLATE[] = {
     ".-------.", 
 	"|%2s   %s|", 
 	"|       |", 
@@ -21,8 +25,9 @@ const char *FULL_TEMPLATE[] = {
 	"|     %2s|", 
 	"`-------'",
 };
-const char *COMPACT_TEMPLATE = "[%2s%s]";
+const char* COMPACT_TEMPLATE = "[%2s%s]";
 const char SUIT_CHARS[] = { 'H', 'D', 'C', 'S' };
+
 
 void GameScene::Draw()
 {
@@ -37,120 +42,230 @@ void GameScene::Draw()
 		printw("-");
 	}
 
-	const char *SUITS_INFO = "[H]EARTS, [D]IAMONDS, [C]LUBS, [S]PADES";
+	const string SUITS_INFO = "[H]EARTS, [D]IAMONDS, [C]LUBS, [S]PADES";
 
-	position_x = std::round((size_x - strlen(SUITS_INFO)) / 2.0);
-	mvprintw(1, position_x, "%s", SUITS_INFO);
+	position_x = std::round((size_x - SUITS_INFO.length()) / 2.0);
+	mvprintw(1, position_x, "%s", SUITS_INFO.c_str());
 
 	for (int i = 0; i < size_x; i++)
 	{
-		move(0, i);
+		move(2, i);
 		printw("-");
 	}
 
 	// ADDITIONAL DECK, DRAW PILE & SORTED PILES
-	const size_t COMPACT_ROW_SIZE = 42;
-	char COMPACT_ROW_TEXT[COMPACT_ROW_SIZE] = "\0";
+	position_x = std::ceil((size_x - 41) / 2.0);
 
-	position_x = std::round((size_x - COMPACT_ROW_SIZE) / 2.0);
+	m_highlighted_pos_x = position_x + (6 * m_cursor_x);
+	m_highlighted_pos_y = 4 + m_cursor_y;
 
-	char additional_text[64] = "\0";
-	GetDeckDrawBuffer(m_game_decks.additional, additional_text, sizeof(additional_text));
-	mvprintw(4, position_x, additional_text);
+	if (m_cursor_x == 0 && m_cursor_y == 0) {
+		attron(COLOR_PAIR(1));
+		DrawDeck(m_game_decks.additional, 4, position_x);
+		attroff(COLOR_PAIR(1));
+	} else {
+		DrawDeck(m_game_decks.additional, 4, position_x);
+	}
+	
+	DrawDeck(m_game_decks.draw_pile, 4, position_x + 6);
 
-	char draw_pile_text[64] = "\0";
-	GetDeckDrawBuffer(m_game_decks.draw_pile, draw_pile_text, sizeof(draw_pile_text));
-	mvprintw(4, position_x + 1 + strlen(additional_text), draw_pile_text);
+	DrawDeck(m_game_decks.sorted[0], 4, position_x + 18);
+	DrawDeck(m_game_decks.sorted[1], 4, position_x + 18 + 6);
+	DrawDeck(m_game_decks.sorted[2], 4, position_x + 18 + 12);
+	DrawDeck(m_game_decks.sorted[3], 4, position_x + 18 + 18);
 
-
-	// snprintf(COMPACT_ROW_TEXT, sizeof(COMPACT_ROW_TEXT), COMPACT_TEMPLATE, "? ", "?");
-	// strcat(COMPACT_ROW_TEXT, " ");
-	// snprintf(COMPACT_ROW_TEXT, sizeof(COMPACT_ROW_TEXT), COMPACT_TEMPLATE, "? ", "?");
-
-	// if (m_game_decks.additional.GetSize() > 0)
-	// {
-	// 	mvprintw(4, position_x, COMPACT_TEMPLATE, "? ", "?");
-	// }
-	// else
-	// {
-	// 	mvprintw(4, position_x, const char *, ...)
-	// }
-}
-
-void GameScene::Process(const int &input) {}
-
-void GameScene::GetCardDrawBuffer(const Card& card, char *buffer, size_t buffer_size)
-{
-	char suit_char = SUIT_CHARS[card.suit];
-
-	if (!m_full_ascii) {
-		if (card.hidden) {
-			snprintf(buffer, buffer_size, COMPACT_TEMPLATE, "? ", "?");
-			return;
-		}
-		snprintf(buffer, buffer_size, COMPACT_TEMPLATE, card.rank, suit_char);
-		return;
+	int column_offset = 6;
+	if (m_hard_mode) {
+		column_offset = 9;
 	}
 
 	for (int i = 0; i < 7; i++) {
-		if (i % 2 == 0) {
-			snprintf(buffer, buffer_size, "%s", FULL_TEMPLATE[i]);
-			continue;
+		DrawDeck(m_game_decks.columns[i], column_offset, position_x + (6*i));
+	}
+
+	// SELECT CURSORS
+	attron(COLOR_PAIR(1));
+	mvprintw(m_highlighted_pos_y, 0, ">");
+
+	mvprintw(3, m_highlighted_pos_x + 2, "\\");
+	attroff(COLOR_PAIR(1));
+}
+
+
+void GameScene::Process(const int &input) 
+{
+	switch (input)
+	{
+	case KEY_UP:
+		m_cursor_y--;
+		if (m_cursor_y < 0) {
+			m_cursor_y = 0;
+		}
+		if (m_cursor_y == 1) {
+			m_cursor_y = 0;
+		}
+		break;
+	case KEY_DOWN:
+		m_cursor_y++;
+		if (m_hard_mode) {
+			if (m_cursor_x == 1 && (m_cursor_y == 0 || m_cursor_y == 1)) {
+				m_cursor_y = 2;
+			}
+			break;
 		}
 
-		switch (i) {
-		case 1:
-			snprintf(buffer, buffer_size, FULL_TEMPLATE[i], card.rank, suit_char);
-			break;
-		case 3:
-			snprintf(buffer, buffer_size, FULL_TEMPLATE[i], suit_char);
-			break;
-		case 7:
-			snprintf(buffer, buffer_size, FULL_TEMPLATE[i], card.rank);
-			break;
-		default:
-			snprintf(buffer, buffer_size, "%s", FULL_TEMPLATE[i]);
-			break;
+		if (m_cursor_y == 1) {
+			m_cursor_y = 2;
+		} 
+		else if (m_cursor_y > m_game_decks.columns[m_cursor_x].GetSize()+1) {
+			m_cursor_y = m_game_decks.columns[m_cursor_x].GetSize()+1;
 		}
+		break;
+
+	case KEY_LEFT:
+		m_cursor_x--;
+		if (m_cursor_x < 0) {
+			m_cursor_x = 0;
+		} else if (m_cursor_x == 2 && m_cursor_y == 0) {
+			m_cursor_x = 1;
+		}
+		else if (m_cursor_y > m_game_decks.columns[m_cursor_x].GetSize()+1) {
+			m_cursor_y = m_game_decks.columns[m_cursor_x].GetSize()+1;
+		}
+		break;
+	case KEY_RIGHT:
+		m_cursor_x++;
+		if (m_cursor_x >= 7) {
+			m_cursor_x = 6;
+		} else if (m_cursor_x == 2 && m_cursor_y == 0) {
+			m_cursor_x = 3;
+		}
+		else if (m_cursor_y > m_game_decks.columns[m_cursor_x].GetSize()+1) {
+			m_cursor_y = m_game_decks.columns[m_cursor_x].GetSize()+1;
+		}
+		break;
+	case '\n':
+	case KEY_ENTER:
+		if (m_selected_pos_y == m_highlighted_pos_y && m_selected_pos_x == m_highlighted_pos_x) {
+			m_selected_pos_y = -1;
+			m_selected_pos_x = -1;
+		} else {
+			m_selected_pos_x = m_highlighted_pos_x;
+			m_selected_pos_y = m_highlighted_pos_y;
+		}
+	default:
+		break;
 	}
 }
 
-void GameScene::GetDeckDrawBuffer(Deck& deck, char *buffer, size_t buffer_size)
+
+string GameScene::GetCardString(const Card& card)
 {
+	char suit_char = SUIT_CHARS[card.suit];
+	string card_str = "";
+
 	if (!m_full_ascii) {
-		if (deck.GetSize() == 0) {
-			snprintf(buffer, buffer_size, COMPACT_TEMPLATE, "  ", " ");
+		if (card.hidden) {
+			return "[? ?]";
+		}
+		if (card.rank >= 10) {
+			return "[" + std::to_string(card.rank) + suit_char + "]";
+		}
+		return "[" + std::to_string(card.rank) + " " + suit_char + "]";
+	}
+
+	return "";
+}
+
+void GameScene::DrawCard(const Card& card, int pos_y, int pos_x) {
+	char suit_char = SUIT_CHARS[card.suit];
+	string card_str = "";
+
+	if (!m_full_ascii) {
+		std::string card_str = GetCardString(card);
+		if (pos_y == m_selected_pos_y && pos_x == m_selected_pos_x) {
+			m_selected_card = std::make_unique<Card>(card);
+			attron(COLOR_PAIR(3));
+    		mvprintw(pos_y, pos_x, "%s", card_str.c_str());
+			attroff(COLOR_PAIR(3));
+			return;
+		}
+		else if (pos_y == m_highlighted_pos_y && pos_x == m_highlighted_pos_x) {
+			attron(COLOR_PAIR(1));
+    		mvprintw(pos_y, pos_x, "%s", card_str.c_str());
+			attroff(COLOR_PAIR(1));
 			return;
 		}
 		
-		if (deck.hidden){
-			snprintf(buffer, buffer_size, COMPACT_TEMPLATE, "? ", "?");
-			return;
-		}
-
-		if (!deck.draw_as_column) {
-			const Card& top_card = deck.GetTopCard();
-			GetCardDrawBuffer(top_card, buffer, buffer_size);
-			return;
-		}
-
-		size_t max = deck.max_column_size;
-		if (max < deck.GetSize()) {
-			max = deck.GetSize();
-		}
-		for (size_t i = 0; i < max; i++) {
-			const Card& card = deck.GetConstCardReference(i);
-			GetCardDrawBuffer(card, buffer, buffer_size);
-			strcat(buffer, "\n");
-		}
-		return;
+    	mvprintw(pos_y, pos_x, "%s", card_str.c_str());
 	}
+}
 
-	// if (deck.GetSize() == 0) {
-	// 	snprintf(buffer, buffer_size, COMPACT_TEMPLATE, "  ", " ");
-	// 	return;
-	// }
 
-	// const Card& top_card = deck.GetTopCard();
-	// GetCardDrawBuffer(top_card, buffer, buffer_size);
+void GameScene::DrawDeck(Deck& deck, int pos_y, int pos_x) {
+	if (!m_full_ascii) {
+		if (deck.GetSize() == 0) {
+			if (pos_y == m_selected_pos_y && pos_x == m_selected_pos_x) {
+				m_selected_pos_y = -1;
+				m_selected_pos_x = -1;
+			}
+			if (pos_y == m_highlighted_pos_y && pos_x == m_highlighted_pos_x) {
+				attron(COLOR_PAIR(1));
+				mvprintw(pos_y, pos_x, COMPACT_TEMPLATE, "  ", " ");
+				attroff(COLOR_PAIR(1));
+				return;
+			}
+			mvprintw(pos_y, pos_x, COMPACT_TEMPLATE, "  ", " ");
+			return;
+		}
+		if (deck.hidden) {
+			if (pos_y == m_selected_pos_y && pos_x == m_selected_pos_x) {
+				if (m_cursor_x == 0 && m_cursor_y == 0) {
+					
+					m_selected_pos_y = -1;
+					m_selected_pos_x = -1;
+				}
+			}
+			else if (pos_y == m_highlighted_pos_y && pos_x == m_highlighted_pos_x) {
+				attron(COLOR_PAIR(1));
+				mvprintw(pos_y, pos_x, COMPACT_TEMPLATE, "? ", "?");
+				attroff(COLOR_PAIR(1));
+				return;
+			}
+			mvprintw(pos_y, pos_x, COMPACT_TEMPLATE, "? ", "?");
+			return;
+		}
+		if (!deck.draw_as_column) {
+			const Card& top_card = deck.GetConstCardReference(deck.GetSize()-1);
+
+			if (top_card.suit == Card::HEARTS || top_card.suit == Card::DIAMONDS) {
+				attron(COLOR_PAIR(2));
+				DrawCard(top_card, pos_y, pos_x);
+				attroff(COLOR_PAIR(2));
+				return;
+			}
+			DrawCard(top_card, pos_y, pos_x);	
+		}
+
+		int first_index = (int)(deck.GetSize()) - deck.max_column_size;
+		
+		if (first_index < 0)
+			first_index = 0;
+
+		int offset = 0;
+		for (int i = first_index; i < deck.GetSize(); i++) 
+		{
+			const Card& card = deck.GetConstCardReference(i);
+			string card_text = GetCardString(card);
+
+			if (card.hidden == false && (card.suit == Card::HEARTS || card.suit == Card::DIAMONDS)) {
+				attron(COLOR_PAIR(2));
+				DrawCard(card, pos_y + offset, pos_x);
+				attroff(COLOR_PAIR(2));
+			} else {
+				DrawCard(card, pos_y + offset, pos_x);
+			}
+			offset++;
+		}
+	}
 }
