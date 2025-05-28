@@ -102,9 +102,9 @@ void GameScene::Process(const int &input)
 		m_hovered_deck = &m_game_decks.additional;
 	}
 	// SORTED DECKS
-	else if (m_cursor_x > 2 && m_cursor_y == 0)
+	else if (m_cursor_x > 2 && m_cursor_x <= 6 && m_cursor_y == 0) 
 	{
-		m_hovered_deck = &m_game_decks.sorted[m_cursor_x - 2];
+		m_hovered_deck = &m_game_decks.sorted[m_cursor_x - 3];
 	}
 	else if (!m_hard_mode)
 	{
@@ -409,7 +409,7 @@ void GameScene::DrawCardsFromAdditional(int ammount)
 
 void GameScene::ReplenishCardsToAdditional()
 {
-	for (int i = m_game_decks.draw_pile.GetSize() - 1; i > 0; i--)
+	for (int i = m_game_decks.draw_pile.GetSize() - 1; i >= 0; i--)
 	{
 		Card new_card = m_game_decks.draw_pile.PopAt(i);
 		m_game_decks.additional.AppendCard(std::move(new_card), true);
