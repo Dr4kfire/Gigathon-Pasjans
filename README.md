@@ -1,6 +1,7 @@
 # SOLITARE - GIGATHON 2025 Project
 
 This project was made using C++ in just 9 days (I joined the competition later).
+I don't have too much experience with C++ (it was my second ever C++ project!) so I had many problems first compiling the libraries (it took me 3 days).
 It's using the ncurses and PDCursesMod libraies for rendering ascii characters inside the terminal.
 
 ## Project structure:
