@@ -16,5 +16,9 @@ The structure looks like this:
 
 ## How to compile the project
 
+First get the project's source files on your computer using this command:
+```
+git clone https://github.com/Dr4kfire/Gigathon-Pasjans.git
+```
 In the root of this project there is a `CMakeLists.txt` file used to compile this project. 
 The simplest way of doing so would be to install the Microsoft's C/C++ Extension Pack in VSCode and compile ther project using CMake.
