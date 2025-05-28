@@ -16,5 +16,6 @@ public:
 
 private:
 	bool m_is_running = true;
+	
 	Game game;
 };

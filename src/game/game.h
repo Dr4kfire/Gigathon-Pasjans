@@ -17,6 +17,7 @@ public:
 
 private:
 	bool m_hard_mode = false;
+	bool m_full_acii = false;
 
 	Scene *current_scene;
 

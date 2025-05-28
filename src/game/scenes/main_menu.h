@@ -19,5 +19,5 @@ private:
     int option_idx = 0;
     
     bool m_hard_mode = false;
-    bool m_compact_ascii = false;
+    bool m_full_ascii = false;
 };

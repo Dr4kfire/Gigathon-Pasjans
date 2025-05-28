@@ -19,10 +19,12 @@ void MainMenu::Draw()
 	getmaxyx(stdscr, size_y, size_x);
 
 	// TITLE
-	const char *ASCII[] = {" ____   __   ____    __   __   __ _  ____",
-	                       "(  _ \\ / _\\ / ___) _(  ) / _\\ (  ( \\/ ___)",
-	                       " ) __//    \\\\___ \\/ \\) \\/    \\/    /\\___ \\",
-	                       "(__)  \\_/\\_/(____/\\____/\\_/\\_/(_)__)(____/"};
+	const char *ASCII[] = {
+		" ____   __   ____    __   __   __ _  ____",
+	    "(  _ \\ / _\\ / ___) _(  ) / _\\ (  ( \\/ ___)",
+	    " ) __//    \\\\___ \\/ \\) \\/    \\/    /\\___ \\",
+	    "(__)  \\_/\\_/(____/\\____/\\_/\\_/(_)__)(____/"
+	};
 	const int ASCII_LENGTH = 4;
 
 	position_x = std::round((size_x - strlen(ASCII[0])) / 2.0);
@@ -45,7 +47,7 @@ void MainMenu::Draw()
 		diff_opt_string = "HARD";
 	}
 	const char* ascii_comp_string = "FULL   ";
-	if (m_compact_ascii == true) {
+	if (m_full_ascii == false) {
 		ascii_comp_string = "COMPACT";
 	}
 
@@ -83,6 +85,18 @@ void MainMenu::Draw()
 	mvprintw(14, position_x, "|                      |");
 	mvprintw(15, position_x, "+----------------------+");
 
+	// FULL ASCII WARNING
+	if (m_full_ascii == true) {
+		const char* WARNING_TEXT[] = {
+			"* When using full ASCII mode please resize",
+			"  and scale your terminal window!"
+		};
+
+		position_x = std::round((size_x - std::strlen(WARNING_TEXT[0])) / 2.0);
+		mvprintw(size_y - 4, position_x, "%s", WARNING_TEXT[0]);
+		mvprintw(size_y - 3, position_x, "%s", WARNING_TEXT[1]);
+	}
+
 	// FOOTER
 	mvprintw(size_y - 1, 0, "Gigathon 2025");
 	mvprintw(size_y - 1, size_x - 8, "Dr4kfire");
@@ -109,7 +123,7 @@ void MainMenu::Process(const int &input)
 	case KEY_RIGHT:
 		if (m_selected_option == Options::START) {
 			SetChangeScene(true);
-			result = {{"diff", m_hard_mode}};
+			result = {{"diff", m_hard_mode}, {"ascii", m_full_ascii}};
 			break;
 		}
 		else if (m_selected_option == Options::DIFFICULTY) {
@@ -117,7 +131,7 @@ void MainMenu::Process(const int &input)
 			break;
 		}
 
-		m_compact_ascii = !m_compact_ascii;
+		m_full_ascii = !m_full_ascii;
 		break;
 	default:
 		break;

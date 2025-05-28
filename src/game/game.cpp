@@ -17,6 +17,7 @@ void Game::Process(const int &input)
 	    main_menu.ShouldChangeScene())
 	{
 		m_hard_mode = main_menu.result["diff"];
+		m_full_acii = main_menu.result["ascii"];
 		ChangeScene(game_scene);
 	}
 }
