@@ -96,6 +96,11 @@ void GameScene::Draw()
 
 void GameScene::Process(const int &input)
 {
+	if (m_hard_mode)
+	{
+		m_game_decks.draw_pile.draw_as_column = true;
+	}
+
 	// ADDITIONAL DECK
 	if (m_cursor_x == 0 && m_cursor_y == 0)
 	{

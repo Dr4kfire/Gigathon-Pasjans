@@ -43,10 +43,6 @@ public:
 		m_game_decks.additional.hidden = true;
 
 		// DRAW PILE DECK
-		if (m_hard_mode)
-		{
-			m_game_decks.draw_pile.draw_as_column = true;
-		}
 		m_game_decks.draw_pile.max_column_size = 3;
 
 		// SORTED DECKS
@@ -59,6 +55,9 @@ public:
 	void Draw() override;
 	void Process(const int &input) override;
 
+public:
+	bool m_hard_mode = false;
+
 private:
 	std::string GetCardString(const Card &card);
 	void DrawCard(int card_index, Deck &deck, int pos_y, int pos_x);
@@ -70,7 +69,6 @@ private:
 	bool CanRepositionCard(Deck &new_deck, Card &card);
 	void RepositionCards(Deck &original_deck, Deck &new_deck, int first_card_index, bool only_one_card = false);
 
-	bool m_hard_mode = false;
 	bool m_full_ascii = false;
 
 	GameDecks m_game_decks;

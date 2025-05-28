@@ -1,5 +1,6 @@
 #include "game.h"
 #include "scenes/scene.h"
+#include <typeinfo>
 
 Game::Game()
     : main_menu("main_menu"), game_scene("game_scene"),
@@ -7,7 +8,10 @@ Game::Game()
 {
 }
 
-void Game::Draw() { current_scene->Draw(); }
+void Game::Draw()
+{
+	current_scene->Draw();
+}
 
 void Game::Process(const int &input)
 {
@@ -19,7 +23,15 @@ void Game::Process(const int &input)
 		m_hard_mode = main_menu.result["diff"];
 		m_full_acii = main_menu.result["ascii"];
 		ChangeScene(game_scene);
+
+		if (current_scene->scene_name == game_scene.scene_name)
+		{
+			game_scene.m_hard_mode = m_hard_mode;
+		}
 	}
 }
 
-void Game::ChangeScene(Scene &new_scene) { current_scene = &new_scene; }
+void Game::ChangeScene(Scene &new_scene)
+{
+	current_scene = &new_scene;
+}
