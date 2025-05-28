@@ -30,6 +30,7 @@ public:
 
 	void AppendCard(struct Card card);
 	Card PopFrontCard();
+	const Card& GetTopCard();
 
 	size_t GetSize();
 

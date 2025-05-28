@@ -52,25 +52,25 @@ void GameScene::Draw()
 	char COMPACT_ROW_TEXT[42] = "\0";
 	position_x = std::round((size_x - strlen(COMPACT_ROW_TEXT)) / 2.0);
 
-	snprintf(COMPACT_ROW_TEXT, sizeof(COMPACT_ROW_TEXT), COMPACT_TEMPLATE, "? ",
-	         "?");
+	snprintf(COMPACT_ROW_TEXT, sizeof(COMPACT_ROW_TEXT), COMPACT_TEMPLATE, "? ", "?");
 	strcat(COMPACT_ROW_TEXT, " ");
-	snprintf(COMPACT_ROW_TEXT, sizeof(COMPACT_ROW_TEXT), COMPACT_TEMPLATE, "? ",
-	         "?");
+	snprintf(COMPACT_ROW_TEXT, sizeof(COMPACT_ROW_TEXT), COMPACT_TEMPLATE, "? ", "?");
 
-	if (m_game_decks.additional.GetSize() > 0)
-	{
-		mvprintw(4, position_x, );
-	}
-	else
-	{
-		mvprintw(4, position_x, const char *, ...)
-	}
+	
+
+	// if (m_game_decks.additional.GetSize() > 0)
+	// {
+	// 	mvprintw(4, position_x, COMPACT_TEMPLATE, "? ", "?");
+	// }
+	// else
+	// {
+	// 	mvprintw(4, position_x, const char *, ...)
+	// }
 }
 
 void GameScene::Process(const int &input) {}
 
-void GameScene::GetCardDrawBuffer(Card &card, char *buffer, size_t buffer_size)
+void GameScene::GetCardDrawBuffer(Card& card, char *buffer, size_t buffer_size)
 {
 	char suit_char = SUIT_CHARS[card.suit];
 
@@ -104,4 +104,15 @@ void GameScene::GetCardDrawBuffer(Card &card, char *buffer, size_t buffer_size)
 			break;
 		}
 	}
+}
+
+void GameScene::GetDeckDrawBuffer(Deck &deck, char *buffer, size_t buffer_size)
+{
+	if (deck.GetSize() == 0) {
+		snprintf(buffer, buffer_size, COMPACT_TEMPLATE, "? ", "?");
+		return;
+	}
+
+	const Card& top_card = deck.GetTopCard();
+	// GetCardDrawBuffer(top_card, buffer, buffer_size);
 }

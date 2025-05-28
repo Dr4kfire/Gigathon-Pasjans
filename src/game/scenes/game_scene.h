@@ -22,6 +22,7 @@ public:
 
 private:
 	void GetCardDrawBuffer(Card& card, char* buffer, size_t buffer_size);
+	void GetDeckDrawBuffer(Deck& deck, char* buffer, size_t buffer_size);
 
 	bool m_hard_mode = false;
 	bool m_full_ascii = false;

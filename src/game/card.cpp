@@ -26,6 +26,10 @@ Card Deck::PopFrontCard()
 	return drawn_card;
 }
 
+const Card& Deck::GetTopCard() {
+	return cards.back();
+}
+
 size_t Deck::GetSize() { return cards.size(); }
 
 const struct Card &Deck::GetConstCardReference(int index)
