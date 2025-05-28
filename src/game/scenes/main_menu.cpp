@@ -20,11 +20,11 @@ void MainMenu::Draw()
 
 	// TITLE
 	const char *ASCII[] = {
-		" ____   __   __    __  ____  __   ____  ____ ",
-		"/ ___) /  \\ (  )  (  )(_  _)/ _\\ (  _ \\(  __)",
-		"\\___ \\(  O )/ (_/\\ )(   )( /    \\ )   / ) _) ",
-		"(____/ \\__/ \\____/(__) (__)\\_/\\_/(__\\_)(____)",
-		// " ____   __   ____    __   __   __ _  ____",
+	    " ____   __   __    __  ____  __   ____  ____ ",
+	    "/ ___) /  \\ (  )  (  )(_  _)/ _\\ (  _ \\(  __)",
+	    "\\___ \\(  O )/ (_/\\ )(   )( /    \\ )   / ) _) ",
+	    "(____/ \\__/ \\____/(__) (__)\\_/\\_/(__\\_)(____)",
+	    // " ____   __   ____    __   __   __ _  ____",
 	    // "(  _ \\ / _\\ / ___) _(  ) / _\\ (  ( \\/ ___)",
 	    // " ) __//    \\\\___ \\/ \\) \\/    \\/    /\\___ \\",
 	    // "(__)  \\_/\\_/(____/\\____/\\_/\\_/(_)__)(____/"
@@ -46,12 +46,14 @@ void MainMenu::Draw()
 	const int BOX_WIDTH = 24;
 	position_x = std::round((size_x - BOX_WIDTH) / 2.0);
 
-	const char* diff_opt_string = "EASY";
-	if (m_hard_mode == true) {
+	const char *diff_opt_string = "EASY";
+	if (m_hard_mode == true)
+	{
 		diff_opt_string = "HARD";
 	}
-	const char* ascii_comp_string = "FULL   ";
-	if (m_full_ascii == false) {
+	const char *ascii_comp_string = "FULL   ";
+	if (m_full_ascii == false)
+	{
 		ascii_comp_string = "COMPACT";
 	}
 
@@ -90,13 +92,14 @@ void MainMenu::Draw()
 	mvprintw(15, position_x, "+----------------------+");
 
 	// FULL ASCII WARNING
-	if (m_full_ascii == true) {
+	if (m_full_ascii == true)
+	{
 		// const char* WARNING_TEXT[] = {
 		// 	"* When using full ASCII mode please resize",
 		// 	"  and scale your terminal window!"
 		// };
-		const char* WARNING_TEXT[] = {
-			"* Currently not working!",
+		const char *WARNING_TEXT[] = {
+		    "* Currently not working!",
 		};
 
 		position_x = std::round((size_x - std::strlen(WARNING_TEXT[0])) / 2.0);
@@ -117,25 +120,29 @@ void MainMenu::Process(const int &input)
 	{
 	case KEY_UP:
 		option_idx--;
-		if (option_idx < 0) {
+		if (option_idx < 0)
+		{
 			option_idx = 2;
 		}
 		break;
 	case KEY_DOWN:
 		option_idx++;
-		if (option_idx >= 3) {
+		if (option_idx >= 3)
+		{
 			option_idx = 0;
 		}
 		break;
 	case '\n':
 	case KEY_LEFT:
 	case KEY_RIGHT:
-		if (m_selected_option == Options::START) {
+		if (m_selected_option == Options::START)
+		{
 			SetChangeScene(true);
 			result = {{"diff", m_hard_mode}, {"ascii", m_full_ascii}};
 			break;
 		}
-		else if (m_selected_option == Options::DIFFICULTY) {
+		else if (m_selected_option == Options::DIFFICULTY)
+		{
 			m_hard_mode = !m_hard_mode;
 			break;
 		}

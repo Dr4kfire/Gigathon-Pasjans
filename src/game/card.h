@@ -21,16 +21,18 @@ class Deck
 public:
 	static Deck GenerateFullDeck();
 
-	Deck(bool draw_as_column = false) : draw_as_column(draw_as_column)
+	Deck(bool draw_as_column = false)
+	    : draw_as_column(draw_as_column)
 	{
 		m_cards.reserve(52);
 	}
 
-	void AppendCard(struct Card card, bool hide_card = true);
+	void AppendCard(Card card, bool hide_card = true);
 
 	Card PopFrontCard();
-	const Card& GetConstCardReference(int index);
-	Card& GetCardReference(int index);
+	Card PopAt(int index);
+	const Card &GetConstCardReference(int index);
+	Card &GetCardReference(int index);
 
 	void Shuffle();
 
@@ -41,6 +43,8 @@ public:
 	int max_column_size = 13;
 	bool hidden = false;
 
+	bool sort_deck = false;
+
 private:
-	std::vector<struct Card> m_cards;
+	std::vector<Card> m_cards;
 };

@@ -4,3 +4,7 @@ UseTab: ForIndentation
 TabWidth: 4
 BreakBeforeBraces: Allman
 AccessModifierOffset: -4
+ColumnLimit: 0
+AllowShortFunctionsOnASingleLine: Empty
+AllowShortIfStatementsOnASingleLine: true
+BinPackParameters: false

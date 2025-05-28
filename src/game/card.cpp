@@ -1,8 +1,7 @@
 #include "card.h"
-#include <cstdlib>
 #include <algorithm>
+#include <cstdlib>
 #include <random>
-
 
 void Deck::AppendCard(Card card, bool hide_card)
 {
@@ -21,32 +20,34 @@ Card Deck::PopFrontCard()
 	return drawn_card;
 }
 
-const Card& Deck::GetConstCardReference(int index)
+Card Deck::PopAt(int index)
 {
-	const Card& card = m_cards[index];
+	Card removed = std::move(m_cards[index]);
+	m_cards.erase(m_cards.begin() + index);
+	return removed;
+}
+
+const Card &Deck::GetConstCardReference(int index)
+{
+	const Card &card = m_cards[index];
 	return card;
 }
 
-Card& Deck::GetCardReference(int index) {
-	Card& card = m_cards[index];
+Card &Deck::GetCardReference(int index)
+{
+	Card &card = m_cards[index];
 	return card;
 }
-
 
 void Deck::Shuffle()
 {
-    std::random_device rd;
-    std::mt19937 rng(rd());
+	std::random_device rd;
+	std::mt19937 rng(rd());
 
-    std::shuffle(m_cards.begin(), m_cards.end(), rng);
+	std::shuffle(m_cards.begin(), m_cards.end(), rng);
 }
 
-
-size_t Deck::GetSize() 
-{
-	return m_cards.size();
-}
-
+size_t Deck::GetSize() { return m_cards.size(); }
 
 Deck Deck::GenerateFullDeck()
 {
