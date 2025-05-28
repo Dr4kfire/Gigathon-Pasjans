@@ -150,7 +150,7 @@ void GameScene::Process(const int &input)
 		}
 
 		if (m_hard_mode) {
-			if (m_cursor_x == 1 ) {
+			if (m_cursor_x == 1 && m_cursor_y >= 0 && m_cursor_y <= 3) {
 				if (m_game_decks.draw_pile.GetSize() > 0) {
 					m_cursor_y = std::max(2, m_cursor_y - 1);
 					if (m_cursor_y == 1 || m_cursor_y == 0) {
@@ -173,18 +173,9 @@ void GameScene::Process(const int &input)
 		break;
 	case KEY_DOWN:
 		m_cursor_y++;
-		// if (m_hard_mode)
-		// {	
-		// 	if (m_cursor_x == 1 && (m_cursor_y == 0 || m_cursor_y == 1))
-		// 	{
-		// 		m_cursor_y = 2;
-		// 	}
-		// 	break;
-		// }
-
 
 		if (m_hard_mode) {
-			if (m_cursor_x == 1) {
+			if (m_cursor_x == 1 && m_cursor_y >= 0 && m_cursor_y <= 3) {
 				if (m_cursor_y >= 0 && m_cursor_y <= 1) {
 					m_cursor_y = 2;
 				}
@@ -221,7 +212,22 @@ void GameScene::Process(const int &input)
 		m_cursor_x = std::max(0, m_cursor_x - 1);
 
 		if (m_hard_mode) {
-
+			if (m_cursor_x == 1 && m_cursor_y >= 0 && m_cursor_y <= 3) {
+				if (m_cursor_y >= 0 && m_cursor_y <= 1) {
+					m_cursor_y = 2;
+				}
+			} else {
+				if (m_cursor_y >= 1 && m_cursor_y <= 3) {
+					m_cursor_y = 4;
+				}
+				else if (m_cursor_y > m_game_decks.columns[m_cursor_x].GetSize() + 3 && m_game_decks.columns[m_cursor_x].GetSize() > 0)
+				{
+					m_cursor_y = m_game_decks.columns[m_cursor_x].GetSize() + 3;
+				}
+				else if (m_cursor_y >= m_game_decks.columns[m_cursor_x].GetSize() + 4) {
+					m_cursor_y = 2;
+				}
+			}
 		} 
 		else {
 			if (m_cursor_y == 1)
@@ -242,7 +248,22 @@ void GameScene::Process(const int &input)
 
 		// SKIP THE FREE SPACE
 		if (m_hard_mode) {
-
+			if (m_cursor_x == 1 && m_cursor_y >= 0 && m_cursor_y <= 3) {
+				if (m_cursor_y >= 0 && m_cursor_y <= 1) {
+					m_cursor_y = 2;
+				}
+			} else {
+				if (m_cursor_y >= 1 && m_cursor_y <= 3) {
+					m_cursor_y = 4;
+				}
+				else if (m_cursor_y > m_game_decks.columns[m_cursor_x].GetSize() + 3 && m_game_decks.columns[m_cursor_x].GetSize() > 0)
+				{
+					m_cursor_y = m_game_decks.columns[m_cursor_x].GetSize() + 3;
+				}
+				else if (m_cursor_y >= m_game_decks.columns[m_cursor_x].GetSize() + 4) {
+					m_cursor_y = 2;
+				}
+			}
 		} 
 		else {
 			if (m_cursor_y == 1)
