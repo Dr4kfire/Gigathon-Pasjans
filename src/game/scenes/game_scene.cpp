@@ -2,6 +2,7 @@
 #include <algorithm>
 #include <cstdio>
 #include <string>
+#include <vector>
 #ifdef _WIN32
 #define PDC_FORCE_UTF8
 #define PDC_WIDE
@@ -26,6 +27,7 @@ const char *FULL_TEMPLATE[] = {
 };
 const char *COMPACT_TEMPLATE = "[%2s%s]";
 const char SUIT_CHARS[] = {'H', 'D', 'C', 'S'};
+const string RANK_STRINGS[] = {"A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"};
 
 void GameScene::Draw()
 {
@@ -282,6 +284,7 @@ void GameScene::Process(const int &input)
 
 	case '\n':
 	case KEY_ENTER:
+		// DRAW CARDS FROM ADDITIONAL
 		if (m_cursor_x == 0 && m_cursor_y == 0)
 		{
 			if (m_hard_mode)
@@ -354,6 +357,11 @@ void GameScene::Process(const int &input)
 				m_selected_card_index = m_cursor_y - 2;
 			}
 		}
+
+		// DRAW PILE
+		if (&m_game_decks.draw_pile == m_selected_deck) {
+			m_selected_card_index = m_selected_deck->GetSize()-1;
+		}
 		break;
 	default:
 		break;
@@ -363,6 +371,8 @@ void GameScene::Process(const int &input)
 string GameScene::GetCardString(const Card &card)
 {
 	char suit_char = SUIT_CHARS[card.suit];
+	string rank_str = RANK_STRINGS[card.rank];
+
 	string card_str = "";
 
 	if (!m_full_ascii)
@@ -371,11 +381,11 @@ string GameScene::GetCardString(const Card &card)
 		{
 			return "[? ?]";
 		}
-		if (card.rank >= 10)
+		if (rank_str == "10")
 		{
-			return "[" + std::to_string(card.rank) + suit_char + "]";
+			return "[" + rank_str + suit_char + "]";
 		}
-		return "[" + std::to_string(card.rank) + " " + suit_char + "]";
+		return "[" + rank_str + " " + suit_char + "]";
 	}
 
 	return "";
@@ -385,7 +395,6 @@ void GameScene::DrawCard(int card_index, Deck &deck, int pos_y, int pos_x)
 {
 	const Card &card = deck.GetConstCardReference(card_index);
 
-	char suit_char = SUIT_CHARS[card.suit];
 	string card_str = GetCardString(card);
 
 	if (pos_x == m_selected_pos_x && pos_y == m_selected_pos_y && !card.hidden)
@@ -484,12 +493,8 @@ void GameScene::ReplenishCardsToAdditional()
 
 bool GameScene::CanRepositionCard(Deck &new_deck, Card &card)
 {
-	// IF THERE IS NO TOP CARD THE CARD MUST BE A KING
-	if (new_deck.GetSize() == 0 && card.rank == 12)
-	{
-		return true;
-	}
-	else if (new_deck.sort_deck == true) {
+	// IF IT'S A SORT DECK THEN DO SEPERATE CHECKS
+	if (new_deck.sort_deck == true) {
 		if (new_deck.GetSize() == 0 && card.rank == 0) {
 			return true;
 		}
@@ -498,10 +503,16 @@ bool GameScene::CanRepositionCard(Deck &new_deck, Card &card)
 		if (top_card.suit != card.suit) {
 			return false;
 		}
-		if (top_card.rank + 1 != card.suit) {
+		if ((int)(top_card.rank + 1) != card.rank) {
 			return false;
 		}
 
+		return true;
+	}
+
+	// IF THERE IS NO TOP CARD THE CARD MUST BE A KING
+	if (new_deck.GetSize() == 0 && card.rank == 12)
+	{
 		return true;
 	}
 
@@ -547,9 +558,10 @@ void GameScene::RepositionCards(Deck &original_deck, Deck &new_deck, int first_c
 		original_deck.GetCardReference(original_deck.GetSize() - 1).hidden = false;
 		return;
 	}
-	for (int card_idx = first_card_index; card_idx < original_deck.GetSize(); card_idx++)
+	int max = original_deck.GetSize();
+	for (int card_idx = first_card_index; card_idx < max; card_idx++)
 	{
-		Card repositioned_card = original_deck.PopAt(card_idx);
+		Card repositioned_card = original_deck.PopAt(first_card_index);
 		new_deck.AppendCard(std::move(repositioned_card), false);
 	}
 	original_deck.GetCardReference(original_deck.GetSize() - 1).hidden = false;

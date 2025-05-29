@@ -1,4 +1,5 @@
 #include "game.h"
+#include "scenes/game_scene.h"
 #include "scenes/scene.h"
 #include <typeinfo>
 
@@ -15,6 +16,17 @@ void Game::Draw()
 
 void Game::Process(const int &input)
 {
+	switch (input) {
+		case 'r':
+			if (current_scene->scene_name != game_scene.scene_name) {
+				break;
+			}
+			game_scene = GameScene("game_scene");
+			game_scene.m_hard_mode = m_hard_mode;
+			break;
+		default:
+			break;
+	}
 	current_scene->Process(input);
 
 	if (current_scene->scene_name == main_menu.scene_name &&
