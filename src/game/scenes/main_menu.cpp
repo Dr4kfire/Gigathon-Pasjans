@@ -116,20 +116,21 @@ void MainMenu::Draw()
 
 void MainMenu::Process(const int &input)
 {
+	// Main menu box navigation input handling
 	switch (input)
 	{
 	case KEY_UP:
-		option_idx--;
-		if (option_idx < 0)
+		m_option_idx--;
+		if (m_option_idx < 0)
 		{
-			option_idx = 2;
+			m_option_idx = 2;
 		}
 		break;
 	case KEY_DOWN:
-		option_idx++;
-		if (option_idx >= 3)
+		m_option_idx++;
+		if (m_option_idx >= 3)
 		{
-			option_idx = 0;
+			m_option_idx = 0;
 		}
 		break;
 	case '\n':
@@ -153,5 +154,5 @@ void MainMenu::Process(const int &input)
 		break;
 	}
 
-	m_selected_option = static_cast<Options>(option_idx);
+	m_selected_option = static_cast<Options>(m_option_idx);
 }

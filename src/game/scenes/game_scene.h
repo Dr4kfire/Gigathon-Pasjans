@@ -81,7 +81,6 @@ private:
 	void DrawCardsFromAdditional(int ammount);
 	void ReplenishCardsToAdditional();
 
-	bool CanRepositionCard(Deck &new_deck, Card &card);
 	void RepositionCards(Deck &original_deck, Deck &new_deck, int first_card_index, bool only_one_card = false);
 
 	bool m_full_ascii = false;

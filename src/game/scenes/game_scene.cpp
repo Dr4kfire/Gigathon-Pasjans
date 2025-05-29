@@ -276,10 +276,12 @@ void GameScene::Process(const int &input)
 		{
 			if (m_cursor_x == 1 && m_cursor_y >= 0 && m_cursor_y <= 3)
 			{
-				if (m_game_decks.draw_pile.GetSize() == 0) {
+				if (m_game_decks.draw_pile.GetSize() == 0)
+				{
 					m_cursor_y = 4;
 				}
-				else {
+				else
+				{
 					m_cursor_y = 2;
 				}
 			}
@@ -360,7 +362,7 @@ void GameScene::Process(const int &input)
 			m_selected_card_index = -1;
 		}
 		// SELECTED SOMETHING THAT ISN'T SELECTED - CHECK IF CAN BE MOVED
-		else if (CanRepositionCard(*m_hovered_deck, m_selected_deck->GetCardReference(m_selected_card_index)))
+		else if (m_hovered_deck->CanRepositionCard(m_selected_deck->GetCardReference(m_selected_card_index)))
 		{
 			bool only_one_card = false;
 			if (m_selected_deck == &m_game_decks.draw_pile)
@@ -417,10 +419,11 @@ void GameScene::UpdateStateHistory()
 
 void GameScene::LoadLastState()
 {
-	if (m_states_history.size() == 0) {
+	if (m_states_history.size() == 0)
+	{
 		return;
 	}
-	
+
 	GameState last_state = std::move(m_states_history.back());
 	m_states_history.pop_back();
 
@@ -551,74 +554,6 @@ void GameScene::ReplenishCardsToAdditional()
 		m_game_decks.additional.AppendCard(std::move(new_card), true);
 	}
 	m_game_decks.additional.Shuffle();
-}
-
-bool GameScene::CanRepositionCard(Deck &new_deck, Card &card)
-{
-	// DISABLE FOR DRAW PILE
-	if (new_deck.draw_only == true) {
-		return false;
-	}
-
-	// IF IT'S A SORT DECK THEN DO SEPERATE CHECKS
-	if (new_deck.sort_deck == true)
-	{
-		if (new_deck.GetSize() == 0 && card.rank == 0)
-		{
-			return true;
-		}
-
-		const Card &top_card = new_deck.GetConstCardReference(new_deck.GetSize() - 1);
-		if (top_card.suit != card.suit)
-		{
-			return false;
-		}
-		if ((int)(top_card.rank + 1) != card.rank)
-		{
-			return false;
-		}
-
-		return true;
-	}
-
-	// IF THERE IS NO TOP CARD THE CARD MUST BE A KING
-	if (new_deck.GetSize() == 0 && card.rank == 12)
-	{
-		return true;
-	}
-
-	const Card &top_card = new_deck.GetConstCardReference(new_deck.GetSize() - 1);
-
-	// CHECK IF THE CARD IS HIDDEN
-	if (top_card.hidden)
-	{
-		return false;
-	}
-
-	// CHECK IF THE SUIT MATCHES
-	if (top_card.suit == Card::CLUBS || top_card.suit == Card::SPADES)
-	{
-		if (card.suit == Card::CLUBS || card.suit == Card::SPADES)
-		{
-			return false;
-		}
-	}
-	else
-	{
-		if (card.suit == Card::HEARTS || card.suit == Card::DIAMONDS)
-		{
-			return false;
-		}
-	}
-
-	// CHECK IF THE RANK MATCHES
-	if (top_card.rank - 1 != card.rank)
-	{
-		return false;
-	}
-
-	// OTHERWISE: THE CARD MATCHES AND CAN BE PLACED
-	return true;
 }
 
 void GameScene::RepositionCards(Deck &original_deck, Deck &new_deck, int first_card_index, bool only_one_card)

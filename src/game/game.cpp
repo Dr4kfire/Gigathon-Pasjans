@@ -2,56 +2,54 @@
 #include "scenes/game_scene.h"
 #include "scenes/scene.h"
 
-Game::Game()
-    : main_menu("main_menu"), game_scene("game_scene"),
-      current_scene(&main_menu)
-{
-}
-
 void Game::Draw()
 {
-	current_scene->Draw();
+	m_current_scene->Draw();
 }
 
 void Game::Process(const int &input)
 {
+	// Input handling
 	switch (input)
 	{
+	// Game resetting
 	case 'r':
-		if (current_scene->scene_name != game_scene.scene_name)
+		if (m_current_scene->scene_name != m_game_scene.scene_name)
 		{
 			break;
 		}
-		game_scene = GameScene("game_scene");
-		game_scene.m_hard_mode = m_hard_mode;
+		m_game_scene = GameScene("m_game_scene");
+		m_game_scene.m_hard_mode = m_hard_mode;
 		break;
+	// Undo
 	case 'u':
-		if (current_scene->scene_name != game_scene.scene_name)
+		if (m_current_scene->scene_name != m_game_scene.scene_name)
 		{
 			break;
 		}
-		game_scene.LoadLastState();
+		m_game_scene.LoadLastState();
 		break;
 	default:
 		break;
 	}
-	current_scene->Process(input);
+	// Pass inputs to the current scene
+	m_current_scene->Process(input);
 
-	if (current_scene->scene_name == main_menu.scene_name &&
-	    main_menu.ShouldChangeScene())
+	// Change the scene and pass the inputed settings values
+	if (m_current_scene->scene_name == m_main_menu.scene_name && m_main_menu.ShouldChangeScene())
 	{
-		m_hard_mode = main_menu.result["diff"];
-		m_full_acii = main_menu.result["ascii"];
-		ChangeScene(game_scene);
+		m_hard_mode = m_main_menu.result["diff"];
+		m_full_acii = m_main_menu.result["ascii"];
+		ChangeScene(m_game_scene);
 
-		if (current_scene->scene_name == game_scene.scene_name)
+		if (m_current_scene->scene_name == m_game_scene.scene_name)
 		{
-			game_scene.m_hard_mode = m_hard_mode;
+			m_game_scene.m_hard_mode = m_hard_mode;
 		}
 	}
 }
 
 void Game::ChangeScene(Scene &new_scene)
 {
-	current_scene = &new_scene;
+	m_current_scene = &new_scene;
 }
