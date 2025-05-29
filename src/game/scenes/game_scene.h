@@ -2,6 +2,8 @@
 
 #include "../card.h"
 #include "scene.h"
+#include <vector>
+
 
 struct GameDecks
 {
@@ -10,6 +12,12 @@ struct GameDecks
 	Deck sorted[4];
 	Deck columns[7];
 };
+
+
+struct GameState {
+	GameDecks game_decks;
+};
+
 
 class GameScene : public Scene
 {
@@ -45,16 +53,22 @@ public:
 
 		// DRAW PILE DECK
 		m_game_decks.draw_pile.max_column_size = 3;
+		m_game_decks.draw_pile.draw_only = true;
 
 		// SORTED DECKS
 		m_game_decks.sorted[0].sort_deck = true;
 		m_game_decks.sorted[1].sort_deck = true;
 		m_game_decks.sorted[2].sort_deck = true;
 		m_game_decks.sorted[3].sort_deck = true;
+
+		m_states_history.reserve(3);
 	}
 
 	void Draw() override;
 	void Process(const int &input) override;
+
+	void UpdateStateHistory();
+	void LoadLastState();
 
 public:
 	bool m_hard_mode = false;
@@ -71,6 +85,8 @@ private:
 	void RepositionCards(Deck &original_deck, Deck &new_deck, int first_card_index, bool only_one_card = false);
 
 	bool m_full_ascii = false;
+
+	std::vector<GameState> m_states_history;
 
 	GameDecks m_game_decks;
 

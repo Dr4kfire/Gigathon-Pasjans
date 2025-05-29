@@ -2,7 +2,7 @@
 #include <algorithm>
 #include <cstdio>
 #include <string>
-#include <vector>
+#include <utility>
 #ifdef _WIN32
 #define PDC_FORCE_UTF8
 #define PDC_WIDE
@@ -188,10 +188,7 @@ void GameScene::Process(const int &input)
 		{
 			if (m_cursor_x == 1 && m_cursor_y >= 0 && m_cursor_y <= 3)
 			{
-				if (m_cursor_y >= 0 && m_cursor_y <= 1)
-				{
-					m_cursor_y = 2;
-				}
+				m_cursor_y = 4;
 			}
 			else
 			{
@@ -279,9 +276,11 @@ void GameScene::Process(const int &input)
 		{
 			if (m_cursor_x == 1 && m_cursor_y >= 0 && m_cursor_y <= 3)
 			{
-				if (m_cursor_y >= 0 && m_cursor_y <= 1)
-				{
-					m_cursor_y = 2;
+				if (m_game_decks.draw_pile.GetSize() == 0) {
+					m_cursor_y = 4;
+				}
+				else {
+					m_cursor_y = 3;
 				}
 			}
 			else
@@ -406,6 +405,30 @@ void GameScene::Process(const int &input)
 	}
 }
 
+void GameScene::UpdateStateHistory()
+{
+	GameState new_state = {m_game_decks};
+	if (m_states_history.size() == m_states_history.max_size())
+	{
+		m_states_history.erase(m_states_history.begin());
+	}
+	m_states_history.push_back(new_state);
+}
+
+void GameScene::LoadLastState()
+{
+	if (m_states_history.size() == 0) {
+		return;
+	}
+	
+	GameState last_state = std::move(m_states_history.back());
+	m_states_history.pop_back();
+
+	m_game_decks = last_state.game_decks;
+	m_selected_card_index = -1;
+	m_selected_deck = nullptr;
+}
+
 string GameScene::GetCardString(const Card &card)
 {
 	char suit_char = SUIT_CHARS[card.suit];
@@ -527,10 +550,16 @@ void GameScene::ReplenishCardsToAdditional()
 		Card new_card = m_game_decks.draw_pile.PopAt(i);
 		m_game_decks.additional.AppendCard(std::move(new_card), true);
 	}
+	m_game_decks.additional.Shuffle();
 }
 
 bool GameScene::CanRepositionCard(Deck &new_deck, Card &card)
 {
+	// DISABLE FOR DRAW PILE
+	if (new_deck.draw_only == true) {
+		return false;
+	}
+
 	// IF IT'S A SORT DECK THEN DO SEPERATE CHECKS
 	if (new_deck.sort_deck == true)
 	{
@@ -594,6 +623,7 @@ bool GameScene::CanRepositionCard(Deck &new_deck, Card &card)
 
 void GameScene::RepositionCards(Deck &original_deck, Deck &new_deck, int first_card_index, bool only_one_card)
 {
+	UpdateStateHistory();
 	if (only_one_card)
 	{
 		Card repositioned_card = original_deck.PopFrontCard();

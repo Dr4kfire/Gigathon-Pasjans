@@ -1,7 +1,6 @@
 #include "game.h"
 #include "scenes/game_scene.h"
 #include "scenes/scene.h"
-#include <typeinfo>
 
 Game::Game()
     : main_menu("main_menu"), game_scene("game_scene"),
@@ -25,6 +24,13 @@ void Game::Process(const int &input)
 		}
 		game_scene = GameScene("game_scene");
 		game_scene.m_hard_mode = m_hard_mode;
+		break;
+	case 'u':
+		if (current_scene->scene_name != game_scene.scene_name)
+		{
+			break;
+		}
+		game_scene.LoadLastState();
 		break;
 	default:
 		break;

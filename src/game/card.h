@@ -44,6 +44,7 @@ public:
 	bool hidden = false;
 
 	bool sort_deck = false;
+	bool draw_only = false;
 
 private:
 	std::vector<Card> m_cards;
