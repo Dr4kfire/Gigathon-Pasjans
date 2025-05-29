@@ -280,7 +280,7 @@ void GameScene::Process(const int &input)
 					m_cursor_y = 4;
 				}
 				else {
-					m_cursor_y = 3;
+					m_cursor_y = 2;
 				}
 			}
 			else
