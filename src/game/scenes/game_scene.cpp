@@ -94,6 +94,18 @@ void GameScene::Draw()
 
 	mvprintw(3, m_hovered_pos_x + 2, "\\");
 	attroff(COLOR_PAIR(1));
+
+	// UNDO INFORMATION
+	mvprintw(size_y-1, 0, "Undos: %d / 3", (int)(m_states_history.size()));
+
+	// MOVES INFORMATION
+	string moves_info = "Moves: " + std::to_string(m_moves);
+	position_x = std::round((size_x - moves_info.length()) / 2.0);
+	mvprintw(size_y-1, position_x, "%s", moves_info.c_str());
+
+	// RESET INFORMATION
+	string reset_info = "Press `R` to reset";
+	mvprintw(size_y-1, size_x - reset_info.length(), "%s", reset_info.c_str());
 }
 
 void GameScene::Process(const int &input)

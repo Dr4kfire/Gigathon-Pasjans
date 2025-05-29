@@ -86,8 +86,8 @@ private:
 	bool m_full_ascii = false;
 
 	std::vector<GameState> m_states_history;
-
 	GameDecks m_game_decks;
+	int m_moves = 0;
 
 	int m_cursor_x = 0;
 	int m_cursor_y = 0;
