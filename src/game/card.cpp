@@ -1,143 +1,62 @@
 #include "card.h"
-#include <algorithm>
-#include <cstdlib>
-#include <random>
 
-Deck::Deck(bool draw_as_column)
-    : draw_as_column(draw_as_column)
-{
-	m_cards.reserve(52);
-}
+// INCLUDE NCURSES (Unix) OR PDCURSES (Windows)
+#ifdef _WIN32
+#define PDC_FORCE_UTF8
+#define PDC_WIDE
+#define CHTYPE_64
+#include <curses.h>
+#else
+#include <ncurses.h>
+#endif
 
-void Deck::AppendCard(Card card, bool hide_card)
-{
-	if (m_cards.size() > 52)
-		return;
+#include <string>
+using std::string;
 
-	card.hidden = hide_card;
-	m_cards.emplace_back(card);
-}
 
-Card Deck::PopFrontCard()
-{
-	Card drawn_card = std::move(m_cards.back());
-	drawn_card.hidden = false;
-	m_cards.pop_back();
-	return drawn_card;
-}
+const char* Card::CARD_TEMPLATE = "[%2s%s]";
+const char* Card::CARD_HIDDEN = "` ? `";
 
-Card Deck::PopAt(int index)
-{
-	Card removed = std::move(m_cards[index]);
-	m_cards.erase(m_cards.begin() + index);
-	return removed;
-}
+const char Card::SUIT_CHARS[4] = {'H', 'D', 'C', 'S'};
+const std::string Card::RANK_STRINGS[13] = {"A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"};
 
-const Card &Deck::GetConstCardReference(int index)
-{
-	const Card &card = m_cards[index];
-	return card;
-}
 
-Card &Deck::GetCardReference(int index)
-{
-	Card &card = m_cards[index];
-	return card;
-}
+void Card::Draw(int pos_y, int pos_x) const
+{	
+	// Get the card's string
+	string card_str = "";
 
-void Deck::Shuffle()
-{
-	std::random_device rd;
-	std::mt19937 rng(rd());
+	char suit_char = SUIT_CHARS[card_data.suit];
+	string rank_str = RANK_STRINGS[card_data.rank];
 
-	std::shuffle(m_cards.begin(), m_cards.end(), rng);
-}
-
-size_t Deck::GetSize()
-{
-	return m_cards.size();
-}
-
-Deck Deck::GenerateFullDeck()
-{
-	Deck new_deck;
-	for (int i = 0; i < 4; i++)
+	if (card_data.hidden)
 	{
-		Card::suits current_suit = static_cast<Card::suits>(i);
-
-		for (int j = 0; j < 13; j++)
-		{
-			new_deck.m_cards.push_back({j, current_suit, true});
-		}
+		card_str = CARD_HIDDEN;
 	}
-	return new_deck;
-}
-
-bool Deck::CanRepositionCard(Card &card)
-{
-	// Disable repositioning into draw_only decks
-	if (draw_only)
-	{
-		return false;
+	else {
+		card_str = "[" + rank_str + " " + suit_char + "]";
+		
+		if (rank_str == "10") card_str = "[" + rank_str + suit_char + "]";
 	}
 
-	// Make seperate checks for the sort_deck decks
-	if (sort_deck)
+
+	// Draw the card using correct colors
+	if (m_selected && !card_data.hidden)
 	{
-		// If the deck is empty allow only Aces
-		if (GetSize() == 0 && card.rank == 0)
-		{
-			return true;
-		}
-
-		// Check with the top card of this deck
-		const Card &top_card = GetConstCardReference(GetSize() - 1);
-		// If the suit and rank matches - allow repositioning
-		if ((top_card.suit == card.suit) && (top_card.rank + 1 == card.rank))
-		{
-			return true;
-		}
-
-		return false;
+		attron(COLOR_PAIR(3));
+	}
+	else if (m_hovered)
+	{
+		attron(COLOR_PAIR(1));
+	}
+	else if ((card_data.suit == CardData::HEARTS || card_data.suit == CardData::DIAMONDS) && !card_data.hidden)
+	{
+		attron(COLOR_PAIR(2));
 	}
 
-	// If the deck is empty - allow only a King
-	if (GetSize() == 0 && card.rank == 12)
-	{
-		return true;
-	}
+	mvprintw(pos_y, pos_x, "%s", card_str.c_str());
 
-	// Check with the top card of this deck
-	const Card &top_card = GetConstCardReference(GetSize() - 1);
-
-	// Disable placing on hidden cards
-	if (top_card.hidden)
-	{
-		return false;
-	}
-
-	// Allow only cards with the diffrent color (CLUBS, SPADES - HEARTS, DIAMONDS)
-	if (top_card.suit == Card::CLUBS || top_card.suit == Card::SPADES)
-	{
-		if (card.suit == Card::CLUBS || card.suit == Card::SPADES)
-		{
-			return false;
-		}
-	}
-	else
-	{
-		if (card.suit == Card::HEARTS || card.suit == Card::DIAMONDS)
-		{
-			return false;
-		}
-	}
-
-	// Allow only cards with a lower rank
-	if (top_card.rank - 1 != card.rank)
-	{
-		return false;
-	}
-
-	// Otherwise: player can place the card
-	return true;
+	attroff(COLOR_PAIR(1));
+	attroff(COLOR_PAIR(2));
+	attroff(COLOR_PAIR(3));
 }
