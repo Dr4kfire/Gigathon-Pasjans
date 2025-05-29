@@ -4,6 +4,10 @@ This project was made using C++ in just 9 days (I joined the competition later).
 I don't have too much experience with C++ (it was my second ever C++ project!) so I had many problems first compiling the libraries (it took me 3 days).
 It's using the ncurses and PDCursesMod libraies for rendering ascii characters inside the terminal.
 
+## Controls:
+
+Use the `arrow keys` to navigate in the menus and to select cards. To move cards use `ENTER` to choose what do you want to move and then press it again while hovering over the place you want to move cards to reposition them. You can undo 3 times using the `u` key and reset using `r`. To exit the game press `ctrl`+`c`.
+
 ## Project structure:
 
 The structure looks like this:
