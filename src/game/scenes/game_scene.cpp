@@ -415,7 +415,7 @@ void GameScene::Process(const int &input)
 void GameScene::UpdateStateHistory()
 {
 	GameState new_state = {m_game_decks};
-	if (m_states_history.size() == m_states_history.max_size())
+	if (m_states_history.size() == 3)
 	{
 		m_states_history.erase(m_states_history.begin());
 	}
