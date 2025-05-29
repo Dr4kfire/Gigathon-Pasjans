@@ -326,6 +326,7 @@ void GameScene::Process(const int &input)
 		// DRAW CARDS FROM ADDITIONAL
 		if (m_cursor_x == 0 && m_cursor_y == 0)
 		{
+			m_moves++;
 			if (m_hard_mode)
 			{
 				DrawCardsFromAdditional(3);
@@ -367,6 +368,7 @@ void GameScene::Process(const int &input)
 		// SELECTED SOMETHING THAT ISN'T SELECTED - CHECK IF CAN BE MOVED
 		else if (m_hovered_deck->CanRepositionCard(m_selected_deck->GetCardReference(m_selected_card_index)))
 		{
+			m_moves++;
 			bool only_one_card = false;
 			if (m_selected_deck == &m_game_decks.draw_pile)
 			{
