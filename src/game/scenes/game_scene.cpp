@@ -16,15 +16,6 @@
 
 using std::string;
 
-const char *FULL_TEMPLATE[] = {
-    ".-------.",
-    "|%2s   %s|",
-    "|       |",
-    "|   %s   |",
-    "|       |",
-    "|     %2s|",
-    "`-------'",
-};
 const char *COMPACT_TEMPLATE = "[%2s%s]";
 const char SUIT_CHARS[] = {'H', 'D', 'C', 'S'};
 const string RANK_STRINGS[] = {"A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"};
