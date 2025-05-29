@@ -109,7 +109,7 @@ void GameScene::Process(const int &input)
 		m_hovered_deck = &m_game_decks.additional;
 	}
 	// SORTED DECKS
-	else if (m_cursor_x > 2 && m_cursor_x <= 6 && m_cursor_y == 0) 
+	else if (m_cursor_x > 2 && m_cursor_x <= 6 && m_cursor_y == 0)
 	{
 		m_hovered_deck = &m_game_decks.sorted[m_cursor_x - 3];
 	}
@@ -144,30 +144,38 @@ void GameScene::Process(const int &input)
 	{
 	case KEY_UP:
 		m_cursor_y = std::max(0, m_cursor_y - 1);
-		if (m_cursor_y == 1) {
+		if (m_cursor_y == 1)
+		{
 			m_cursor_y = 0;
 		}
-		if (m_cursor_x == 2 && m_cursor_y < 2) {
+		if (m_cursor_x == 2 && m_cursor_y < 2)
+		{
 			m_cursor_y = 2;
 		}
 
-		if (m_hard_mode) {
-			if (m_cursor_x == 1 && m_cursor_y >= 0 && m_cursor_y <= 3) {
-				if (m_game_decks.draw_pile.GetSize() > 0) {
+		if (m_hard_mode)
+		{
+			if (m_cursor_x == 1 && m_cursor_y >= 0 && m_cursor_y <= 3)
+			{
+				if (m_game_decks.draw_pile.GetSize() > 0)
+				{
 					m_cursor_y = std::max(2, m_cursor_y - 1);
-					if (m_cursor_y == 1 || m_cursor_y == 0) {
+					if (m_cursor_y == 1 || m_cursor_y == 0)
+					{
 						m_cursor_y = 2;
 					}
 					break;
 				}
 				m_cursor_y++;
 			}
-			
-			if (m_cursor_y >= 1 && m_cursor_y <= 3) {
+
+			if (m_cursor_y >= 1 && m_cursor_y <= 3)
+			{
 				m_cursor_y = 0;
 			}
 
-			if (m_cursor_x == 2 && m_cursor_y < 4) {
+			if (m_cursor_x == 2 && m_cursor_y < 4)
+			{
 				m_cursor_y = 4;
 			}
 		}
@@ -176,25 +184,33 @@ void GameScene::Process(const int &input)
 	case KEY_DOWN:
 		m_cursor_y++;
 
-		if (m_hard_mode) {
-			if (m_cursor_x == 1 && m_cursor_y >= 0 && m_cursor_y <= 3) {
-				if (m_cursor_y >= 0 && m_cursor_y <= 1) {
+		if (m_hard_mode)
+		{
+			if (m_cursor_x == 1 && m_cursor_y >= 0 && m_cursor_y <= 3)
+			{
+				if (m_cursor_y >= 0 && m_cursor_y <= 1)
+				{
 					m_cursor_y = 2;
 				}
-			} else {
-				if (m_cursor_y >= 1 && m_cursor_y <= 3) {
+			}
+			else
+			{
+				if (m_cursor_y >= 1 && m_cursor_y <= 3)
+				{
 					m_cursor_y = 4;
 				}
 				else if (m_cursor_y > m_game_decks.columns[m_cursor_x].GetSize() + 3 && m_game_decks.columns[m_cursor_x].GetSize() > 0)
 				{
 					m_cursor_y = m_game_decks.columns[m_cursor_x].GetSize() + 3;
 				}
-				else if (m_cursor_y >= m_game_decks.columns[m_cursor_x].GetSize() + 4) {
+				else if (m_cursor_y >= m_game_decks.columns[m_cursor_x].GetSize() + 4)
+				{
 					m_cursor_y = 2;
 				}
 			}
-		} 
-		else {
+		}
+		else
+		{
 			if (m_cursor_y == 1)
 			{
 				m_cursor_y = 2;
@@ -203,35 +219,44 @@ void GameScene::Process(const int &input)
 			{
 				m_cursor_y = m_game_decks.columns[m_cursor_x].GetSize() + 1;
 			}
-			else if (m_cursor_y >= m_game_decks.columns[m_cursor_x].GetSize() + 2) {
+			else if (m_cursor_y >= m_game_decks.columns[m_cursor_x].GetSize() + 2)
+			{
 				m_cursor_y = 2;
 			}
 		}
-		
+
 		break;
 
 	case KEY_LEFT:
 		m_cursor_x = std::max(0, m_cursor_x - 1);
 
-		if (m_hard_mode) {
-			if (m_cursor_x == 1 && m_cursor_y >= 0 && m_cursor_y <= 3) {
-				if (m_cursor_y >= 0 && m_cursor_y <= 1) {
+		if (m_hard_mode)
+		{
+			if (m_cursor_x == 1 && m_cursor_y >= 0 && m_cursor_y <= 3)
+			{
+				if (m_cursor_y >= 0 && m_cursor_y <= 1)
+				{
 					m_cursor_y = 2;
 				}
-			} else {
-				if (m_cursor_y >= 1 && m_cursor_y <= 3) {
+			}
+			else
+			{
+				if (m_cursor_y >= 1 && m_cursor_y <= 3)
+				{
 					m_cursor_y = 4;
 				}
 				else if (m_cursor_y > m_game_decks.columns[m_cursor_x].GetSize() + 3 && m_game_decks.columns[m_cursor_x].GetSize() > 0)
 				{
 					m_cursor_y = m_game_decks.columns[m_cursor_x].GetSize() + 3;
 				}
-				else if (m_cursor_y >= m_game_decks.columns[m_cursor_x].GetSize() + 4) {
+				else if (m_cursor_y >= m_game_decks.columns[m_cursor_x].GetSize() + 4)
+				{
 					m_cursor_y = 2;
 				}
 			}
-		} 
-		else {
+		}
+		else
+		{
 			if (m_cursor_y == 1)
 			{
 				m_cursor_y = 2;
@@ -240,7 +265,8 @@ void GameScene::Process(const int &input)
 			{
 				m_cursor_y = m_game_decks.columns[m_cursor_x].GetSize() + 1;
 			}
-			else if (m_cursor_y >= m_game_decks.columns[m_cursor_x].GetSize() + 2) {
+			else if (m_cursor_y >= m_game_decks.columns[m_cursor_x].GetSize() + 2)
+			{
 				m_cursor_y = 2;
 			}
 		}
@@ -249,25 +275,33 @@ void GameScene::Process(const int &input)
 		m_cursor_x = std::clamp(m_cursor_x + 1, 0, 6);
 
 		// SKIP THE FREE SPACE
-		if (m_hard_mode) {
-			if (m_cursor_x == 1 && m_cursor_y >= 0 && m_cursor_y <= 3) {
-				if (m_cursor_y >= 0 && m_cursor_y <= 1) {
+		if (m_hard_mode)
+		{
+			if (m_cursor_x == 1 && m_cursor_y >= 0 && m_cursor_y <= 3)
+			{
+				if (m_cursor_y >= 0 && m_cursor_y <= 1)
+				{
 					m_cursor_y = 2;
 				}
-			} else {
-				if (m_cursor_y >= 1 && m_cursor_y <= 3) {
+			}
+			else
+			{
+				if (m_cursor_y >= 1 && m_cursor_y <= 3)
+				{
 					m_cursor_y = 4;
 				}
 				else if (m_cursor_y > m_game_decks.columns[m_cursor_x].GetSize() + 3 && m_game_decks.columns[m_cursor_x].GetSize() > 0)
 				{
 					m_cursor_y = m_game_decks.columns[m_cursor_x].GetSize() + 3;
 				}
-				else if (m_cursor_y >= m_game_decks.columns[m_cursor_x].GetSize() + 4) {
+				else if (m_cursor_y >= m_game_decks.columns[m_cursor_x].GetSize() + 4)
+				{
 					m_cursor_y = 2;
 				}
 			}
-		} 
-		else {
+		}
+		else
+		{
 			if (m_cursor_y == 1)
 			{
 				m_cursor_y = 2;
@@ -276,7 +310,8 @@ void GameScene::Process(const int &input)
 			{
 				m_cursor_y = m_game_decks.columns[m_cursor_x].GetSize() + 1;
 			}
-			else if (m_cursor_y >= m_game_decks.columns[m_cursor_x].GetSize() + 2) {
+			else if (m_cursor_y >= m_game_decks.columns[m_cursor_x].GetSize() + 2)
+			{
 				m_cursor_y = 2;
 			}
 		}
@@ -304,7 +339,7 @@ void GameScene::Process(const int &input)
 			m_selected_pos_x = m_hovered_pos_x;
 			m_selected_pos_y = m_hovered_pos_y;
 			m_selected_deck = m_hovered_deck;
-			if (m_hovered_deck == &m_game_decks.draw_pile) 
+			if (m_hovered_deck == &m_game_decks.draw_pile)
 			{
 				m_selected_card_index = 0;
 			}
@@ -329,10 +364,12 @@ void GameScene::Process(const int &input)
 		else if (CanRepositionCard(*m_hovered_deck, m_selected_deck->GetCardReference(m_selected_card_index)))
 		{
 			bool only_one_card = false;
-			if (m_selected_deck == &m_game_decks.draw_pile) {
+			if (m_selected_deck == &m_game_decks.draw_pile)
+			{
 				only_one_card = true;
 			}
-			else if (m_selected_deck->sort_deck == true) {
+			else if (m_selected_deck->sort_deck == true)
+			{
 				only_one_card = true;
 			}
 
@@ -359,8 +396,9 @@ void GameScene::Process(const int &input)
 		}
 
 		// DRAW PILE
-		if (&m_game_decks.draw_pile == m_selected_deck) {
-			m_selected_card_index = m_selected_deck->GetSize()-1;
+		if (&m_game_decks.draw_pile == m_selected_deck)
+		{
+			m_selected_card_index = m_selected_deck->GetSize() - 1;
 		}
 		break;
 	default:
@@ -449,7 +487,7 @@ void GameScene::DrawDeck(Deck &deck, int pos_y, int pos_x)
 
 	int offset = 0;
 	int first_index =
-		std::clamp((int)(deck.GetSize() - deck.max_column_size), 0, (int)(deck.GetSize() - 1));
+	    std::clamp((int)(deck.GetSize() - deck.max_column_size), 0, (int)(deck.GetSize() - 1));
 
 	for (int card_index = first_index; card_index < deck.GetSize(); card_index++)
 	{
@@ -494,16 +532,20 @@ void GameScene::ReplenishCardsToAdditional()
 bool GameScene::CanRepositionCard(Deck &new_deck, Card &card)
 {
 	// IF IT'S A SORT DECK THEN DO SEPERATE CHECKS
-	if (new_deck.sort_deck == true) {
-		if (new_deck.GetSize() == 0 && card.rank == 0) {
+	if (new_deck.sort_deck == true)
+	{
+		if (new_deck.GetSize() == 0 && card.rank == 0)
+		{
 			return true;
 		}
-		
+
 		const Card &top_card = new_deck.GetConstCardReference(new_deck.GetSize() - 1);
-		if (top_card.suit != card.suit) {
+		if (top_card.suit != card.suit)
+		{
 			return false;
 		}
-		if ((int)(top_card.rank + 1) != card.rank) {
+		if ((int)(top_card.rank + 1) != card.rank)
+		{
 			return false;
 		}
 
@@ -552,7 +594,8 @@ bool GameScene::CanRepositionCard(Deck &new_deck, Card &card)
 
 void GameScene::RepositionCards(Deck &original_deck, Deck &new_deck, int first_card_index, bool only_one_card)
 {
-	if (only_one_card) {
+	if (only_one_card)
+	{
 		Card repositioned_card = original_deck.PopFrontCard();
 		new_deck.AppendCard(std::move(repositioned_card), false);
 		original_deck.GetCardReference(original_deck.GetSize() - 1).hidden = false;

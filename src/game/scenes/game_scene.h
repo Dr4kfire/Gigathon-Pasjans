@@ -14,7 +14,8 @@ struct GameDecks
 class GameScene : public Scene
 {
 public:
-	GameScene(const std::string &scene_name) : Scene(scene_name)
+	GameScene(const std::string &scene_name)
+	    : Scene(scene_name)
 	{
 		Deck full_deck = Deck::GenerateFullDeck();
 		full_deck.Shuffle();
