@@ -32,8 +32,6 @@ public:
 
 	void DrawDecks(int position_x);
 
-	void UpdateDecks();
-
 	// Undo functionality
 	void UpdateStateHistory();
 	void LoadLastState();
@@ -44,6 +42,9 @@ public:
 private:
 	void DrawCardsFromAdditional(int ammount);
 	void ReplenishCardsToAdditional();
+
+	Deck* GetHoveredDeck();
+	void UpdateDecks();
 
 	// Game data
 	std::vector<GameState> m_states_history;

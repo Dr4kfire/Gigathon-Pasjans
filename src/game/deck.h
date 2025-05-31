@@ -43,6 +43,11 @@ public:
 
 	void RepositionCards(Deck &original_deck, int first_card_index, bool only_one_card = false);
 
+	void SetHoveredCard(int card_index);
+	void SetSelectedCard(int card_index);
+	int GetHoveredCard() { return m_hovered_card; }
+	int GetSelectedCard() { return m_selected_card; }
+
 public:
 	// Draw information
 	bool draw_as_column = false;
@@ -52,8 +57,6 @@ public:
 
 	// Deck position
 	int pos_y, pos_x;
-	int selected_card = -1;
-	int hovered_card = -1;
 
 	// Deck behaviour
 	bool sort_deck = false;
@@ -62,4 +65,7 @@ public:
 private:
 	// Deck's cards
 	std::vector<Card> m_cards;
+
+	int m_selected_card = -1;
+	int m_hovered_card = -1;
 };

@@ -13,6 +13,7 @@ void Game::Process(const int &input)
 	switch (input)
 	{
 	// Game resetting
+	case 'R':
 	case 'r':
 		if (m_current_scene->scene_name != m_game_scene.scene_name)
 		{
@@ -22,6 +23,7 @@ void Game::Process(const int &input)
 		m_game_scene.m_hard_mode = m_hard_mode;
 		break;
 	// Undo
+	case 'U':
 	case 'u':
 		if (m_current_scene->scene_name != m_game_scene.scene_name)
 		{

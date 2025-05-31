@@ -47,13 +47,16 @@ void Deck::DrawDeck(int pos_y, int pos_x)
 		return;
 	}
 
-	// Draw only the top deck
+	// Draw only the top card
 	if (!draw_as_column)
 	{
+		if (hovered) {
+			attron(COLOR_PAIR(1));
+		}
+		
 		Card &top_card = GetCardReference(GetSize()-1);
-		top_card.SetHover(GetSize()-1 == hovered_card);
-		top_card.SetSelected(GetSize()-1 == selected_card);
 		top_card.Draw(pos_y, pos_x);
+		attroff(COLOR_PAIR(1));
 		return;
 	}
 
@@ -64,8 +67,6 @@ void Deck::DrawDeck(int pos_y, int pos_x)
 	for (int card_index = first_index; card_index < GetSize(); card_index++)
 	{
 		Card &card = GetCardReference(card_index);
-		card.SetHover(card_index == hovered_card);
-		card.SetSelected(card_index == selected_card);
 		card.Draw(pos_y+offset, pos_x);
 		offset++;
 	}
@@ -195,7 +196,7 @@ bool Deck::CanRepositionCard(Card &card)
 	}
 
 	// Allow only cards with a lower rank
-	if (top_card.card_data.rank - 1 != card.card_data.rank)
+	if ((int)(top_card.card_data.rank) - 1 != (int)(card.card_data.rank))
 	{
 		return false;
 	}
@@ -232,4 +233,25 @@ void Deck::RepositionCards(Deck &original_deck, int first_card_index, bool only_
 	}
 	// Unhide the new top card in the original deck
 	original_deck.GetCardReference(original_deck.GetSize() - 1).card_data.hidden = false;
+}
+
+
+void Deck::SetHoveredCard(int card_index) {
+	m_hovered_card = card_index;
+	for (int i = 0; i < GetSize(); i++) {
+		GetCardReference(i).SetHover(false);
+	}
+	if (card_index > -1 && card_index < GetSize()) {
+		GetCardReference(card_index).SetHover(true);
+	}
+}
+
+void Deck::SetSelectedCard(int card_index) {
+	m_selected_card = card_index;
+	for (int i = 0; i < GetSize(); i++) {
+		GetCardReference(i).SetSelected(false);
+	}
+	if (card_index > -1 && card_index < GetSize()) {
+		GetCardReference(card_index).SetSelected(true);
+	}
 }
