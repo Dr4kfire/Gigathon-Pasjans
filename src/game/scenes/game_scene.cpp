@@ -250,6 +250,7 @@ Deck *GameScene::GetHoveredDeck()
 		// if the m_cursor_y is inside the draw_pile column
 		if (m_cursor_y >= top && m_cursor_y <= bottom)
 		{
+			m_game_decks.draw_pile.SetHoveredCard(m_cursor_y);
 			return &m_game_decks.draw_pile;
 		}
 	}
@@ -257,6 +258,7 @@ Deck *GameScene::GetHoveredDeck()
 	// Else if draw_deck's position matches m_cursor position
 	else if (m_game_decks.draw_pile.pos_y == m_cursor_y && m_game_decks.draw_pile.pos_x == m_cursor_x)
 	{
+		m_game_decks.draw_pile.SetHoveredCard(m_game_decks.draw_pile.GetSize()-1);
 		return &m_game_decks.draw_pile;
 	}
 
@@ -286,19 +288,22 @@ Deck *GameScene::GetHoveredDeck()
 				continue;
 			}
 
-			// Check only if has cards
-			if (col.GetSize() > 0) {
-				int top = col.pos_y;
-				int bottom = top + (int)col.GetSize() - 1;
+			// If it doesn't have any cards don't check which one
+			// is hovered
+			if (col.GetSize() == 0) return &col;
 
-				// If the cursor isn't inside the y range of the column
-				if (m_cursor_y < top || m_cursor_y > bottom)
-				{
-					continue;
-				}
+			// Check which card is hovered
+			int top = col.pos_y;
+			int bottom = top + (int)col.GetSize() - 1;
+
+			// If the cursor isn't inside the y range of the column
+			if (m_cursor_y < top || m_cursor_y > bottom)
+			{
+				continue;
 			}
 
 			col.SetHoveredCard(m_cursor_y - col.pos_y);
+			
 			return &col;
 		}
 	}
@@ -311,6 +316,10 @@ void GameScene::UpdateDecks()
 	// Reset the hover and selected states
 	m_game_decks.additional.hovered = false;
 	m_game_decks.draw_pile.hovered = false;
+	m_game_decks.draw_pile.SetHoveredCard(-1);
+	if (m_selected_deck != &m_game_decks.draw_pile) {
+		m_game_decks.draw_pile.SetSelectedCard(-1);
+	}
 	for (int i = 0; i < 4; i++)
 	{
 		m_game_decks.sorted[i].hovered = false;
@@ -340,13 +349,11 @@ void GameScene::UpdateDecks()
 	// Reset the hovered deck pointer
 	m_hovered_deck = nullptr;
 
-	// Check which deck is hovered
+	// Check which deck is hovered and if it exsists set it's
+	// hover state
 	m_hovered_deck = GetHoveredDeck();
 
-	if (m_hovered_deck != nullptr)
-	{
-		m_hovered_deck->hovered = true;
-	}
+	if (m_hovered_deck != nullptr) m_hovered_deck->hovered = true;
 }
 
 void GameScene::UpdateStateHistory()
