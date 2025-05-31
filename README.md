@@ -26,3 +26,19 @@ git clone https://github.com/Dr4kfire/Gigathon-Pasjans.git
 ```
 In the root of this project there is a `CMakeLists.txt` file used to compile this project. 
 The simplest way of doing so would be to install the Microsoft's C/C++ Extension Pack in VSCode and compile ther project using CMake.
+
+
+```bash
+git clone https://github.com/Dr4kfire/Gigathon-Pasjans.git
+cd Gigathon-Pasjans
+```
+
+Create a build directory (out-of-source build)
+``` bash
+mkdir build && cd build
+```
+
+Generate build files
+``` bash
+cmake .. -DCMAKE_BUILD_TYPE=Release
+```
