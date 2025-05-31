@@ -61,6 +61,7 @@ public:
 	// Deck behaviour
 	bool sort_deck = false;
 	bool disable_cards_append = false;
+	bool only_top_movable = false;
 
 private:
 	// Deck's cards

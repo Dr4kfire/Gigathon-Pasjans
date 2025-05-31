@@ -53,7 +53,7 @@ void Deck::DrawDeck(int pos_y, int pos_x)
 		if (hovered) {
 			attron(COLOR_PAIR(1));
 		}
-		
+
 		Card &top_card = GetCardReference(GetSize()-1);
 		top_card.Draw(pos_y, pos_x);
 		attroff(COLOR_PAIR(1));

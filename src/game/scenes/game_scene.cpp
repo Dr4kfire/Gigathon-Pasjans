@@ -156,18 +156,60 @@ void GameScene::Process(const int &input)
 	{
 	case KEY_UP:
 		m_cursor_y--;
-		m_cursor_y = std::clamp(m_cursor_y, 0, std::max((int)(m_game_decks.columns[m_cursor_x].GetSize()), 1));
+		if (m_cursor_x == 2 && m_cursor_y == 0) {
+			m_cursor_y++;
+		}
+		if (m_hard_mode) {
+			if ((m_cursor_x == 0 || m_cursor_x >= 2) && m_cursor_y <= 2 && m_cursor_y != 0) {
+				m_cursor_y = 0;
+			}
+			else if (m_cursor_x == 2 && m_cursor_y <= 2) {
+				m_cursor_y++;
+			}
+			m_cursor_y = std::clamp(m_cursor_y, 0, std::max((int)(m_game_decks.columns[m_cursor_x].GetSize()+2), 1));
+		}
+		else {
+			m_cursor_y = std::clamp(m_cursor_y, 0, std::max((int)(m_game_decks.columns[m_cursor_x].GetSize()), 1));
+		}
 		break;
 	case KEY_DOWN:
 		m_cursor_y++;
-		m_cursor_y = std::clamp(m_cursor_y, 0, std::max((int)(m_game_decks.columns[m_cursor_x].GetSize()), 1));
+		if (m_hard_mode) {
+			if ((m_cursor_x == 0 || m_cursor_x >= 2) && m_cursor_y <= 2 && m_cursor_y != 0) {
+				m_cursor_y = 3;
+			}
+			m_cursor_y = std::clamp(m_cursor_y, 0, std::max((int)(m_game_decks.columns[m_cursor_x].GetSize()+2), 1));
+		}
+		else {
+			m_cursor_y = std::clamp(m_cursor_y, 0, std::max((int)(m_game_decks.columns[m_cursor_x].GetSize()), 1));
+		}
 		break;
 	case KEY_LEFT:
 		m_cursor_x = std::max(0, --m_cursor_x);
+		if (m_cursor_x == 2 && m_cursor_y == 0) {
+			m_cursor_x--;
+		}
+		if (m_hard_mode) {
+			if ((m_cursor_x == 0 || m_cursor_x >= 2) && m_cursor_y <= 2 && m_cursor_y != 0) {
+				m_cursor_y = 0;
+			}
+			m_cursor_y = std::clamp(m_cursor_y, 0, std::max((int)(m_game_decks.columns[m_cursor_x].GetSize()+2), 1));
+			break;
+		}
 		m_cursor_y = std::clamp(m_cursor_y, 0, std::max((int)(m_game_decks.columns[m_cursor_x].GetSize()), 1));
 		break;
 	case KEY_RIGHT:
 		m_cursor_x = std::clamp(++m_cursor_x, 0, 6);
+		if (m_cursor_x == 2 && m_cursor_y == 0) {
+			m_cursor_x++;
+		}
+		if (m_hard_mode) {
+			if ((m_cursor_x == 0 || m_cursor_x >= 2) && m_cursor_y <= 2 && m_cursor_y != 0) {
+				m_cursor_y = 0;
+			}
+			m_cursor_y = std::clamp(m_cursor_y, 0, std::max((int)(m_game_decks.columns[m_cursor_x].GetSize()+2), 1));
+			break;
+		}
 		m_cursor_y = std::clamp(m_cursor_y, 0, std::max((int)(m_game_decks.columns[m_cursor_x].GetSize()), 1));
 		break;
 	case '\n':
@@ -242,15 +284,17 @@ Deck *GameScene::GetHoveredDeck()
 	}
 
 	// Else if it's hardmode and m_cursor_x matches draw_pile's pos_x
-	else if (m_hard_mode && m_cursor_x == m_game_decks.draw_pile.pos_x)
+	else if (m_hard_mode && m_cursor_x == m_game_decks.draw_pile.pos_x && m_cursor_y <= 2)
 	{
-		int top = m_game_decks.draw_pile.pos_y;
-		int bottom = top + std::min((int)m_game_decks.draw_pile.GetSize(), m_game_decks.draw_pile.max_column_size);
+		Deck &draw_pile = m_game_decks.draw_pile;
+
+		int top = draw_pile.pos_y;
+		int bottom = top + std::min((int)draw_pile.GetSize(), draw_pile.max_column_size);
 
 		// if the m_cursor_y is inside the draw_pile column
 		if (m_cursor_y >= top && m_cursor_y <= bottom)
 		{
-			m_game_decks.draw_pile.SetHoveredCard(m_cursor_y);
+			draw_pile.SetHoveredCard(std::max((int)(draw_pile.GetSize())-3, 0)+m_cursor_y);
 			return &m_game_decks.draw_pile;
 		}
 	}
@@ -338,6 +382,7 @@ void GameScene::UpdateDecks()
 	}
 
 	m_game_decks.draw_pile.draw_as_column = m_hard_mode;
+	m_game_decks.draw_pile.only_top_movable = m_hard_mode;
 
 	// Update the pos_y of the column decks based on m_hard_mode
 	for (int i = 0; i < 7; i++)
