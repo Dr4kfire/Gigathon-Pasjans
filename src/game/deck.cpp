@@ -14,6 +14,8 @@
 #include <algorithm>
 #include <cstdlib>
 #include <random>
+#include <cassert>
+
 
 Deck::Deck(bool draw_as_column)
     : draw_as_column(draw_as_column)
@@ -64,7 +66,7 @@ void Deck::DrawDeck(int pos_y, int pos_x)
 	int offset = 0;
 	int first_index = std::clamp((int)(GetSize() - max_column_size), 0, (int)(GetSize()-1));
 
-	for (int card_index = first_index; card_index < GetSize(); card_index++)
+	for (int card_index = first_index; card_index < (int)(GetSize()); card_index++)
 	{
 		Card &card = GetCardReference(card_index);
 		card.Draw(pos_y+offset, pos_x);
@@ -74,7 +76,7 @@ void Deck::DrawDeck(int pos_y, int pos_x)
 
 void Deck::AppendCard(Card card, bool hide_card)
 {
-	if (m_cards.size() > 52)
+	if (m_cards.size() >= 52)
 		return;
 
 	card.card_data.hidden = hide_card;
@@ -220,11 +222,13 @@ void Deck::RepositionCards(Deck &original_deck, int first_card_index, bool only_
 		return;
 	}
 
-	int original_deck_size = original_deck.GetSize();
+	int cards_to_move = original_deck.GetSize() - first_card_index;
 	// Loop through the cards starting from the selected
 	// one and ending on the most top one in the array
-	for (int card_idx = first_card_index; card_idx < original_deck_size; card_idx++)
+	for (int card_idx = 0; card_idx < cards_to_move; card_idx++)
 	{
+		if (first_card_index < 0 || first_card_index >= (int)(original_deck.GetSize())) return;
+		
 		// Get the card from the original deck
 		// and reorganize the vector
 		Card repositioned_card = original_deck.PopAt(first_card_index);
@@ -232,26 +236,28 @@ void Deck::RepositionCards(Deck &original_deck, int first_card_index, bool only_
 		AppendCard(std::move(repositioned_card), false);
 	}
 	// Unhide the new top card in the original deck
-	original_deck.GetCardReference(original_deck.GetSize() - 1).card_data.hidden = false;
+	if ((int)(original_deck.GetSize()) > 0) {
+		original_deck.GetCardReference(original_deck.GetSize() - 1).card_data.hidden = false;
+	}
 }
 
 
 void Deck::SetHoveredCard(int card_index) {
 	m_hovered_card = card_index;
-	for (int i = 0; i < GetSize(); i++) {
+	for (int i = 0; i < (int)(GetSize()); i++) {
 		GetCardReference(i).SetHover(false);
 	}
-	if (card_index > -1 && card_index < GetSize()) {
+	if (card_index > -1 && card_index < (int)(GetSize())) {
 		GetCardReference(card_index).SetHover(true);
 	}
 }
 
 void Deck::SetSelectedCard(int card_index) {
 	m_selected_card = card_index;
-	for (int i = 0; i < GetSize(); i++) {
+	for (int i = 0; i < (int)(GetSize()); i++) {
 		GetCardReference(i).SetSelected(false);
 	}
-	if (card_index > -1 && card_index < GetSize()) {
+	if (card_index > -1 && card_index < (int)(GetSize())) {
 		GetCardReference(card_index).SetSelected(true);
 	}
 }

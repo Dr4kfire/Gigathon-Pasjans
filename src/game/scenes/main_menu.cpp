@@ -31,7 +31,7 @@ void MainMenu::Draw()
 	};
 	const int ASCII_LENGTH = 4;
 
-	position_x = std::round((size_x - strlen(ASCII[0])) / 2.0);
+	position_x = (int)(std::round((size_x - strlen(ASCII[0])) / 2.0));
 
 	for (int index = 0; index < ASCII_LENGTH; index++)
 	{
@@ -44,7 +44,7 @@ void MainMenu::Draw()
 
 	// MENU BOX
 	const int BOX_WIDTH = 24;
-	position_x = std::round((size_x - BOX_WIDTH) / 2.0);
+	position_x = (int)(std::round((size_x - BOX_WIDTH) / 2.0));
 
 	const char *diff_opt_string = "EASY";
 	if (m_hard_mode == true)
@@ -102,7 +102,7 @@ void MainMenu::Draw()
 		    "* Currently not working!",
 		};
 
-		position_x = std::round((size_x - std::strlen(WARNING_TEXT[0])) / 2.0);
+		position_x = (int)(std::round((size_x - std::strlen(WARNING_TEXT[0])) / 2.0));
 		attron(COLOR_PAIR(1));
 		mvprintw(size_y - 4, position_x, "%s", WARNING_TEXT[0]);
 		// mvprintw(size_y - 3, position_x, "%s", WARNING_TEXT[1]);

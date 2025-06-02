@@ -46,7 +46,7 @@ GameScene::GameScene(const std::string &scene_name)
 	}
 
 	// ADDITIONAL DECK
-	for (int card_idx = 0; card_idx < full_deck.GetSize(); card_idx++)
+	for (size_t card_idx = 0; card_idx < full_deck.GetSize(); card_idx++)
 	{
 		m_game_decks.additional.AppendCard(full_deck.PopFrontCard(), false);
 	}
@@ -81,11 +81,11 @@ void GameScene::Draw()
 
 	// SUITS INFORMATION
 	const string SUITS_INFO = "[H]EARTS, [D]IAMONDS, [C]LUBS, [S]PADES";
-	position_x = std::round((size_x - SUITS_INFO.length()) / 2.0);
+	position_x = (int)(std::round((size_x - SUITS_INFO.length()) / 2.0));
 	mvprintw(1, position_x, "%s", SUITS_INFO.c_str());
 
 	// ADDITIONAL DECK, DRAW PILE & SORTED PILES
-	position_x = std::ceil((size_x - 41) / 2.0);
+	position_x = (int)(std::ceil((size_x - 41) / 2.0));
 
 	// converting the relative cursor position into
 	// the global position
@@ -111,7 +111,7 @@ void GameScene::Draw()
 
 	// MOVES INFORMATION
 	string moves_info = "Moves: " + std::to_string(m_moves);
-	position_x = std::round((size_x - moves_info.length()) / 2.0);
+	position_x = (int)(std::round((size_x - moves_info.length()) / 2.0));
 	mvprintw(size_y - 1, position_x, "%s", moves_info.c_str());
 
 	// RESET INFORMATION
@@ -435,7 +435,7 @@ void GameScene::DrawCardsFromAdditional(int ammount)
 
 	if (m_game_decks.additional.GetSize() - ammount < 0)
 	{
-		for (int i = 0; i < m_game_decks.additional.GetSize(); i++)
+		for (size_t i = 0; i < m_game_decks.additional.GetSize(); i++)
 		{
 			Card new_card = m_game_decks.additional.PopFrontCard();
 			m_game_decks.draw_pile.AppendCard(std::move(new_card), false);
