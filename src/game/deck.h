@@ -51,7 +51,7 @@ public:
 public:
 	// Draw information
 	bool draw_as_column = false;
-	int max_column_size = 13;
+	int max_column_size = 20;
 	bool hidden = false;
 	bool hovered = false;
 

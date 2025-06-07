@@ -42,3 +42,8 @@ Generate build files
 ``` bash
 cmake .. -DCMAKE_BUILD_TYPE=Release
 ```
+
+Run inside the terminal (Linux/Mac)
+``` bash
+./SolitareGigathon_v1.0
+```
